@@ -1,0 +1,17 @@
+[package]
+name = "opaque"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["lib", "cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = { workspace = true }
+lean-incremental-merkle-tree = { path = "../libs/lean-incremental-merkle-tree" }
+zk-verifier = { path = "../libs/zk-verifier" }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
