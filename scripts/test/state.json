@@ -1,0 +1,24 @@
+{
+  "network": "testnet",
+  "wallets": {
+    "wallet_1769815688744": {
+      "name": "wallet_1769815688744",
+      "publicKey": "GAMMKHCIARLYNGB67CSXBXAQY7TWFEPOZTYOMXBCIIZP2FBUIMILY6G3",
+      "secretKey": "SDKEE2GDS7Z4KGYLIV6JPAHPAWZALJT54GQKKG7YBF46SJJUZZ53T5GM",
+      "privacyKeys": {
+        "nullifier": "2a700aae8d3d46db264acb64f9b4cb57928d2b5abcfa93d6f268227ca5d138ba",
+        "secret": "e9bff1ec76dae1f07f6f423982f84bd0af400c407eba75f1c459c8b13fda6909",
+        "viewingKey": "605a16463dcacb18d1db878c30bd6ca29c3370369eee09b2ae8fcada7332162f",
+        "signingKey": "e9bff1ec76dae1f07f6f423982f84bd0af400c407eba75f1c459c8b13fda6909",
+        "commitment": "c0cf6a1913bdd2074c2471a2d1b4bd43ca073708770e7e4e1480308a7e273f88"
+      },
+      "funded": true,
+      "balance": 10000,
+      "createdAt": "2026-01-30T23:28:08.771Z"
+    }
+  },
+  "activeWallet": "wallet_1769815688744",
+  "notes": [],
+  "createdAt": "2026-01-30T23:28:08.744Z",
+  "updatedAt": "2026-01-30T23:28:28.268Z"
+}

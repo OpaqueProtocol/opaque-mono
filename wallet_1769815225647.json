@@ -1,0 +1,15 @@
+{
+  "network": "TESTNET",
+  "wallet": {
+    "publicKey": "GANCGE57YYERJP6DU3I3YYPXL7GVAU7GKC4MCZB2EEP27OFVPX3MIVPR",
+    "secretKey": "SALFTGODG2SWYMBF3DCBJDQ2MSRYQGYL32KUTAJFIXH5LJGHTXXYJQWQ"
+  },
+  "privacyKeys": {
+    "nullifier": "678c4ceaef8cc0354f54a7d81a025d87a8fb59803616bfc72699194fcce8da20",
+    "secret": "4a8317e2be8172130bfc500bcee95978cd61bdc1452009c9e8caa7be50052cf3",
+    "viewingKey": "e8192b2b4fef11afdd576e26cf31357698e4df51375108062cafaacbe62329a9",
+    "signingKey": "4a8317e2be8172130bfc500bcee95978cd61bdc1452009c9e8caa7be50052cf3",
+    "commitment": "31febe3a21927ac6f08ba2ef227430c8b080692fec5631931f893fa214d6e355"
+  },
+  "timestamp": "2026-01-30T23:20:25.646Z"
+}
