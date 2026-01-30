@@ -283,6 +283,9 @@ fn init_erronous_pub_signals(env: &Env) -> Bytes {
 }
 
 fn setup_test_environment(env: &Env) -> (Address, Address, Address) {
+    // Reset budget to unlimited for tests with depth-20 merkle tree
+    env.cost_estimate().budget().reset_unlimited();
+
     // Deploy groth16_verifier contract
     let groth16_verifier_id = env.register(groth16_verifier_wasm::WASM, ());
 
