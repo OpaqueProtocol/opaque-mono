@@ -40,7 +40,7 @@ pub const ERROR_WITHDRAW_SUCCESS: &str = "Withdrawal successful";
 pub const ERROR_ONLY_ADMIN: &str = "Only the admin can set association root";
 pub const SUCCESS_ASSOCIATION_ROOT_SET: &str = "Association root set successfully";
 
-const TREE_DEPTH: u32 = 20;
+const TREE_DEPTH: u32 = 10; // Supports 1024 deposits (for demo)
 
 // Storage keys
 const NULL_KEY: Symbol = symbol_short!("null");
