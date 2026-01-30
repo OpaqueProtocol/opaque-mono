@@ -40,7 +40,7 @@ pub const ERROR_WITHDRAW_SUCCESS: &str = "Withdrawal successful";
 pub const ERROR_ONLY_ADMIN: &str = "Only the admin can set association root";
 pub const SUCCESS_ASSOCIATION_ROOT_SET: &str = "Association root set successfully";
 
-const TREE_DEPTH: u32 = 2;
+const TREE_DEPTH: u32 = 20;
 
 // Storage keys
 const NULL_KEY: Symbol = symbol_short!("null");
@@ -109,7 +109,7 @@ impl PrivacyPoolsContract {
 
         // Get the leaf index (it's the last leaf in the tree)
         let leaf_index = tree.get_leaf_count() - 1;
-
+    
         // Store updated tree state
         let (new_leaves, new_depth, new_root) = tree.to_storage();
         env.storage().instance().set(&TREE_LEAVES_KEY, &new_leaves);
