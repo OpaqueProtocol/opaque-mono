@@ -1,9 +1,0 @@
-# Rust's output directory
-target
-
-# Local settings
-.soroban
-.stellar
-build
-node_modules
-
