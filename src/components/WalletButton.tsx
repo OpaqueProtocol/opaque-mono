@@ -41,9 +41,13 @@ export const WalletButton = () => {
           parentId="modalContainer"
         >
           <Modal.Heading>
-            Connected as{" "}
-            <code style={{ lineBreak: "anywhere" }}>{address}</code>. Do you
-            want to disconnect?
+            <span className="text-white">
+              Connected as{" "}
+              <code className="text-[#FDDA24] bg-[#FDDA24]/10 px-1.5 py-0.5 rounded break-all">
+                {address}
+              </code>
+              . Do you want to disconnect?
+            </span>
           </Modal.Heading>
           <Modal.Footer itemAlignment="stack">
             <Button
@@ -70,7 +74,7 @@ export const WalletButton = () => {
         </Modal>
       </div>
 
-      <div className="bg-gray-900/60 rounded-full px-4 py-2 border border-gray-700/50 flex items-center space-x-3 cursor-pointer hover:border-[#FDDA24]/50 transition-all duration-300">
+      <div className="bg-gray-900/60 rounded-full px-4 py-2 border border-gray-700/50 flex items-center space-x-3 hover:border-[#FDDA24]/50 transition-all duration-300">
         <div className="w-8 h-8 bg-gradient-to-r from-[#FDDA24] to-yellow-300 rounded-full flex items-center justify-center">
           <span className="text-black font-bold text-sm">
             {address.charAt(0).toUpperCase()}
@@ -81,8 +85,11 @@ export const WalletButton = () => {
         </span>
         <button
           onClick={() => setShowDisconnectModal(true)}
-          className="opacity-0 absolute inset-0 w-full h-full"
-        />
+          className="ml-2 w-6 h-6 bg-gray-700/60 hover:bg-red-500/20 rounded-full flex items-center justify-center transition-colors text-gray-400 hover:text-red-400"
+          title="Disconnect wallet"
+        >
+          <span className="text-xs">×</span>
+        </button>
       </div>
     </div>
   );

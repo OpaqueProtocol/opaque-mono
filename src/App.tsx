@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import ConnectAccount from "./components/ConnectAccount.tsx";
 import { Routes, Route, Outlet, NavLink } from "react-router-dom";
-import Home from "./pages/Home";
+import LandingPage from "./pages/landing/LandingPage";
 import Debugger from "./pages/Debugger.tsx";
 import Wallet from "./pages/Wallet";
 import Deposit from "./pages/Deposit";
@@ -22,24 +22,24 @@ const AppLayout: React.FC = () => (
       {/* Enhanced Modern Navbar */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-2xl border-b border-gray-800/30">
         <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16">
             {/* Enhanced Logo/Brand */}
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FDDA24] to-yellow-300 flex items-center justify-center shadow-lg shadow-[#FDDA24]/20">
-                <span className="text-black font-bold text-xl">◉</span>
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FDDA24] to-yellow-300 flex items-center justify-center shadow-md shadow-[#FDDA24]/20">
+                <span className="text-black font-bold text-base">◉</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              <div className="leading-none">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                   OPAQUE
                 </h1>
-                <p className="text-xs text-gray-500 font-medium">
+                <p className="text-[10px] text-gray-500 font-medium -mt-0.5">
                   Privacy Payments
                 </p>
               </div>
             </div>
 
             {/* Enhanced Navigation */}
-            <nav className="hidden md:flex items-center space-x-1 bg-gray-900/40 rounded-2xl p-2 border border-gray-800/50 backdrop-blur-sm">
+            <nav className="hidden md:flex items-center space-x-1 bg-gray-900/40 rounded-xl p-1.5 border border-gray-800/50 backdrop-blur-sm">
               <NavLink to="/">
                 {({ isActive }) => (
                   <div
@@ -47,10 +47,10 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black shadow-lg shadow-[#FDDA24]/30"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-6 py-3 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
+                    } rounded-lg px-4 py-2 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
                     onClick={() => !isActive && (window.location.href = "/")}
                   >
-                    <HomeIcon size={18} />
+                    <HomeIcon size={16} />
                     <span>Home</span>
                   </div>
                 )}
@@ -63,12 +63,12 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black shadow-lg shadow-[#FDDA24]/30"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-6 py-3 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
+                    } rounded-lg px-4 py-2 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/wallet")
                     }
                   >
-                    <WalletIcon size={18} />
+                    <WalletIcon size={16} />
                     <span>Wallet</span>
                   </div>
                 )}
@@ -81,12 +81,12 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black shadow-lg shadow-[#FDDA24]/30"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-6 py-3 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
+                    } rounded-lg px-4 py-2 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/deposit")
                     }
                   >
-                    <ArrowDownCircle size={18} />
+                    <ArrowDownCircle size={16} />
                     <span>Deposit</span>
                   </div>
                 )}
@@ -99,12 +99,12 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black shadow-lg shadow-[#FDDA24]/30"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-6 py-3 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
+                    } rounded-lg px-4 py-2 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/debug")
                     }
                   >
-                    <CodeIcon size={18} />
+                    <CodeIcon size={16} />
                     <span>Debug</span>
                   </div>
                 )}
@@ -126,8 +126,8 @@ const AppLayout: React.FC = () => (
           </div>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden pb-4">
-            <nav className="flex space-x-1 bg-gray-900/40 rounded-2xl p-2 border border-gray-800/50">
+          <div className="md:hidden pb-3">
+            <nav className="flex space-x-1 bg-gray-900/40 rounded-xl p-1.5 border border-gray-800/50">
               <NavLink to="/" className="flex-1">
                 {({ isActive }) => (
                   <div
@@ -135,7 +135,7 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-4 py-3 font-medium transition-all duration-300 text-center cursor-pointer`}
+                    } rounded-lg px-3 py-2 font-medium transition-all duration-300 text-center cursor-pointer`}
                     onClick={() => !isActive && (window.location.href = "/")}
                   >
                     Home
@@ -149,7 +149,7 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-4 py-3 font-medium transition-all duration-300 text-center cursor-pointer`}
+                    } rounded-lg px-3 py-2 font-medium transition-all duration-300 text-center cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/wallet")
                     }
@@ -165,7 +165,7 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-4 py-3 font-medium transition-all duration-300 text-center cursor-pointer`}
+                    } rounded-lg px-3 py-2 font-medium transition-all duration-300 text-center cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/deposit")
                     }
@@ -181,7 +181,7 @@ const AppLayout: React.FC = () => (
                       isActive
                         ? "bg-[#FDDA24] text-black"
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
-                    } rounded-xl px-4 py-3 font-medium transition-all duration-300 text-center cursor-pointer`}
+                    } rounded-lg px-3 py-2 font-medium transition-all duration-300 text-center cursor-pointer`}
                     onClick={() =>
                       !isActive && (window.location.href = "/debug")
                     }
@@ -200,7 +200,7 @@ const AppLayout: React.FC = () => (
         </div>
       </header>
 
-      <div className="pt-24">
+      <div className="pt-20">
         <Outlet />
       </div>
 
@@ -228,7 +228,7 @@ function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/deposit" element={<Deposit />} />
         <Route path="/debug" element={<Debugger />} />
