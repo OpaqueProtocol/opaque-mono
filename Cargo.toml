@@ -1,5 +1,5 @@
 [workspace]
-members = ["contracts/*"]
+members = ["contracts/*", "contracts/opaque/libs/groth16-verifier"]
 resolver = "2"
 
 [workspace.package]
