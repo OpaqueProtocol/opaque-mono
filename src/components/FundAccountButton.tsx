@@ -54,6 +54,7 @@ const FundAccountButton: React.FC = () => {
             onClick={handleFundAccount}
             variant="primary"
             size="md"
+            className="bg-[#FDDA24] hover:bg-[#e6c520] text-black font-semibold px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md shadow-[#FDDA24]/30"
           >
             Fund Account
           </Button>

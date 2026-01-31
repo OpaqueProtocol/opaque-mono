@@ -68,8 +68,8 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 rounded-3xl p-6 w-full max-w-md text-white">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+      <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-3xl p-6 w-full max-w-md text-white border border-gray-700/50 backdrop-blur-xl shadow-2xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">
@@ -77,7 +77,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600"
+            className="w-8 h-8 bg-gray-800/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 transform hover:scale-110"
           >
             <Icon.X size="sm" />
           </button>
@@ -85,7 +85,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
 
         {/* Wallet Connection Check */}
         {!address && (
-          <div className="mb-6 p-6 bg-gray-800 rounded-2xl text-center">
+          <div className="mb-6 p-6 bg-gray-800/60 rounded-2xl text-center border border-gray-700/50">
             <h3 className="text-lg font-semibold mb-3">Connect Your Wallet</h3>
             <p className="text-gray-400 text-sm mb-4">
               You need to connect your Stellar wallet to withdraw funds.
@@ -95,6 +95,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
               size="md"
               onClick={() => void connectWallet()}
               disabled={isPending}
+              className="bg-[#FDDA24] hover:bg-[#e6c520] text-black font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md shadow-[#FDDA24]/30"
             >
               {isPending ? "Connecting..." : "Connect Wallet"}
             </Button>
@@ -113,10 +114,10 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
                   <button
                     key={crypto.symbol}
                     onClick={() => setSelectedCrypto(crypto.symbol)}
-                    className={`w-full p-4 rounded-2xl flex items-center justify-between transition-colors ${
+                    className={`w-full p-4 rounded-2xl flex items-center justify-between transition-all duration-300 border ${
                       selectedCrypto === crypto.symbol
-                        ? "bg-blue-600 border-2 border-blue-500"
-                        : "bg-gray-800 hover:bg-gray-700"
+                        ? "bg-[#FDDA24]/20 border-[#FDDA24] shadow-md shadow-[#FDDA24]/30"
+                        : "bg-gray-800/60 border-gray-700/50 hover:bg-gray-700/60 hover:border-gray-600/50"
                     }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -155,7 +156,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
                 </label>
                 <button
                   onClick={setMaxAmount}
-                  className="text-blue-400 text-sm hover:text-blue-300"
+                  className="text-[#FDDA24] text-sm hover:text-[#e6c520] transition-colors duration-300"
                 >
                   Max
                 </button>
@@ -166,7 +167,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-gray-800 rounded-2xl p-4 text-white text-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 text-white text-lg focus:ring-2 focus:ring-[#FDDA24] focus:border-[#FDDA24] focus:outline-none transition-all duration-300"
                 />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                   {selectedCrypto}
@@ -194,12 +195,12 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
                 value={withdrawAddress}
                 onChange={(e) => setWithdrawAddress(e.target.value)}
                 placeholder={`Enter ${selectedCrypto} address`}
-                className="w-full bg-gray-800 rounded-2xl p-4 text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 text-white focus:ring-2 focus:ring-[#FDDA24] focus:border-[#FDDA24] focus:outline-none transition-all duration-300"
               />
             </div>
 
             {/* Fee Information */}
-            <div className="mb-6 p-4 bg-gray-800 rounded-2xl">
+            <div className="mb-6 p-4 bg-gray-800/60 rounded-2xl border border-gray-700/50">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-300">Network Fee</span>
                 <span className="text-white">
@@ -218,7 +219,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
         ) : address && step === "confirm" ? (
           /* Confirmation Step */
           <div className="mb-6">
-            <div className="bg-gray-800 rounded-2xl p-6 mb-6">
+            <div className="bg-gray-800/60 rounded-2xl p-6 mb-6 border border-gray-700/50">
               <div className="text-center mb-4">
                 <div
                   className={`w-16 h-16 ${selectedCryptoData?.color} rounded-full flex items-center justify-center mx-auto mb-4`}
@@ -268,7 +269,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
               </div>
             </div>
 
-            <div className="bg-yellow-900 border border-yellow-600 rounded-2xl p-4 mb-6">
+            <div className="bg-yellow-900/60 border border-yellow-600/50 rounded-2xl p-4 mb-6 backdrop-blur-sm">
               <div className="flex items-center space-x-2">
                 <Icon.AlertTriangle className="text-yellow-400" size="sm" />
                 <span className="text-yellow-200 text-sm">
@@ -285,14 +286,14 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ onClose }) => {
           <div className="flex space-x-3">
             <button
               onClick={step === "confirm" ? () => setStep("form") : onClose}
-              className="flex-1 bg-gray-700 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600 transition-colors"
+              className="flex-1 bg-gray-700/60 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600/60 transition-all duration-300 transform hover:scale-105 border border-gray-600/50"
             >
               {step === "confirm" ? "Back" : "Cancel"}
             </button>
             <button
               onClick={handleWithdraw}
               disabled={!amount || !withdrawAddress}
-              className="flex-1 bg-red-600 text-white py-3 rounded-2xl font-semibold hover:bg-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-red-600/80 hover:bg-red-500/80 text-white py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-red-600/30 border border-red-500/50"
             >
               {step === "confirm" ? "Confirm Withdrawal" : "Continue"}
             </button>

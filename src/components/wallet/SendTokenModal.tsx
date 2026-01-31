@@ -47,8 +47,8 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 rounded-3xl p-6 w-full max-w-md text-white">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+      <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-3xl p-6 w-full max-w-md text-white border border-gray-700/50 backdrop-blur-xl shadow-2xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">
@@ -58,7 +58,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600"
+            className="w-8 h-8 bg-gray-800/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 transform hover:scale-110"
           >
             <Icon.X size="sm" />
           </button>
@@ -81,7 +81,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
               <label className="block text-gray-300 text-sm mb-3">
                 You send
               </label>
-              <div className="bg-gray-800 rounded-2xl p-4">
+              <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4">
                 <div className="flex justify-between items-center">
                   <input
                     type="number"
@@ -124,7 +124,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
             <div className="flex justify-center mb-4">
               <button
                 onClick={swapCurrencies}
-                className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors"
+                className="w-10 h-10 bg-gray-800/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 transform hover:scale-110 border border-gray-700/50"
               >
                 <Icon.ArrowUp size="sm" />
               </button>
@@ -135,7 +135,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
               <label className="block text-gray-300 text-sm mb-3">
                 You receive
               </label>
-              <div className="bg-gray-800 rounded-2xl p-4">
+              <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4">
                 <div className="flex justify-between items-center">
                   <div className="text-2xl font-bold text-white">
                     {amount ? receivedAmount.toFixed(6) : "0"}
@@ -168,7 +168,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
 
             {/* Exchange Rate Info */}
             {amount && fromCryptoData && toCryptoData && (
-              <div className="bg-gray-800 rounded-2xl p-4 mb-6">
+              <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 mb-6">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-gray-400">Exchange Rate</span>
                   <span>
@@ -197,7 +197,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
             <button
               onClick={handleNext}
               disabled={!amount || !toCrypto}
-              className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-semibold hover:from-green-600 hover:to-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#FDDA24] hover:bg-[#e6c520] text-black py-4 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#FDDA24]/30"
             >
               Exchange →
             </button>
@@ -206,7 +206,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
 
         {step === "confirm" && (
           <>
-            <div className="bg-gray-800 rounded-2xl p-6 mb-6">
+            <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-6 mb-6">
               <div className="text-center mb-6">
                 <div className="flex justify-center items-center space-x-4 mb-4">
                   <div
@@ -261,7 +261,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
             </div>
 
             {/* Warning */}
-            <div className="bg-yellow-900 border border-yellow-600 rounded-2xl p-4 mb-6">
+            <div className="bg-yellow-900/60 border border-yellow-600/50 rounded-2xl p-4 mb-6 backdrop-blur-sm">
               <div className="flex items-start space-x-2">
                 <Icon.AlertTriangle
                   className="text-yellow-400 mt-0.5"
@@ -283,13 +283,13 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setStep("form")}
-                className="flex-1 bg-gray-700 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600 transition-colors"
+                className="flex-1 bg-gray-700/60 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600/60 transition-all duration-300 transform hover:scale-105 border border-gray-600/50"
               >
                 Back
               </button>
               <button
                 onClick={handleNext}
-                className="flex-1 bg-green-600 text-white py-3 rounded-2xl font-semibold hover:bg-green-500 transition-colors"
+                className="flex-1 bg-[#FDDA24] hover:bg-[#e6c520] text-black py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-[#FDDA24]/30"
               >
                 Confirm Exchange
               </button>
@@ -300,8 +300,8 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
         {step === "success" && (
           <>
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon.Check className="text-white" size="lg" />
+              <div className="w-16 h-16 bg-[#FDDA24] rounded-full flex items-center justify-center mx-auto mb-4 shadow-md shadow-[#FDDA24]/30">
+                <Icon.Check className="text-black" size="lg" />
               </div>
               <h3 className="text-xl font-semibold mb-2">
                 Exchange Successful!
@@ -311,7 +311,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
               </p>
             </div>
 
-            <div className="bg-gray-800 rounded-2xl p-4 mb-6">
+            <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 mb-6">
               <div className="text-center mb-4">
                 <div className="text-lg font-semibold">
                   {amount} {fromCrypto} → {receivedAmount.toFixed(6)} {toCrypto}
@@ -353,7 +353,7 @@ const SendTokenModal: React.FC<SendTokenModalProps> = ({ onClose }) => {
 
             <button
               onClick={onClose}
-              className="w-full bg-green-600 text-white py-3 rounded-2xl font-semibold hover:bg-green-500 transition-colors"
+              className="w-full bg-[#FDDA24] hover:bg-[#e6c520] text-black py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-[#FDDA24]/30"
             >
               Done
             </button>

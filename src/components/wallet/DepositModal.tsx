@@ -28,14 +28,14 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-900 rounded-3xl p-6 w-full max-w-md text-white">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+      <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-3xl p-6 w-full max-w-md text-white border border-gray-700/50 backdrop-blur-xl shadow-2xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Deposit</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600"
+            className="w-8 h-8 bg-gray-800/60 rounded-full flex items-center justify-center hover:bg-gray-700/60 transition-all duration-300 transform hover:scale-110"
           >
             <Icon.X size="sm" />
           </button>
@@ -43,7 +43,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
 
         {/* Wallet Connection Check */}
         {!address && (
-          <div className="mb-6 p-6 bg-gray-800 rounded-2xl text-center">
+          <div className="mb-6 p-6 bg-gray-800/60 rounded-2xl text-center border border-gray-700/50">
             <h3 className="text-lg font-semibold mb-3">Connect Your Wallet</h3>
             <p className="text-gray-400 text-sm mb-4">
               You need to connect your Stellar wallet to deposit funds.
@@ -53,6 +53,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
               size="md"
               onClick={() => void connectWallet()}
               disabled={isPending}
+              className="bg-[#FDDA24] hover:bg-[#e6c520] text-black font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md shadow-[#FDDA24]/30"
             >
               {isPending ? "Connecting..." : "Connect Wallet"}
             </Button>
@@ -63,7 +64,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
         {address && (
           <>
             {/* Current Balance Display */}
-            <div className="mb-6 p-4 bg-gray-800 rounded-2xl">
+            <div className="mb-6 p-4 bg-gray-800/60 rounded-2xl border border-gray-700/50">
               <div className="flex justify-between items-center">
                 <span className="text-gray-300">Current Balance:</span>
                 <span className="font-semibold">
@@ -87,10 +88,10 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
                   <button
                     key={crypto.symbol}
                     onClick={() => setSelectedCrypto(crypto.symbol)}
-                    className={`p-4 rounded-2xl flex items-center space-x-3 transition-colors ${
+                    className={`p-4 rounded-2xl flex items-center space-x-3 transition-all duration-300 border ${
                       selectedCrypto === crypto.symbol
-                        ? "bg-blue-600 border-2 border-blue-500"
-                        : "bg-gray-800 hover:bg-gray-700"
+                        ? "bg-[#FDDA24]/20 border-[#FDDA24] shadow-md shadow-[#FDDA24]/30"
+                        : "bg-gray-800/60 border-gray-700/50 hover:bg-gray-700/60 hover:border-gray-600/50"
                     }`}
                   >
                     <div
@@ -124,7 +125,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full bg-gray-800 rounded-2xl p-4 text-white text-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 text-white text-lg focus:ring-2 focus:ring-[#FDDA24] focus:border-[#FDDA24] focus:outline-none transition-all duration-300"
                 />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                   {selectedCrypto}
@@ -137,14 +138,14 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
               <label className="block text-gray-300 text-sm mb-3">
                 Deposit Address
               </label>
-              <div className="bg-gray-800 rounded-2xl p-4 flex items-center justify-between">
+              <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-4 flex items-center justify-between">
                 <div className="text-sm font-mono text-gray-300 flex-1 mr-3 break-all">
                   {walletAddress || "No wallet connected"}
                 </div>
                 <button
                   onClick={copyToClipboard}
                   disabled={!walletAddress}
-                  className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600 disabled:opacity-50"
+                  className="w-8 h-8 bg-gray-700/60 rounded-lg flex items-center justify-center hover:bg-gray-600/60 disabled:opacity-50 transition-all duration-300 transform hover:scale-110"
                 >
                   <Icon.Copy01 size="sm" />
                 </button>
@@ -171,7 +172,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
             <div className="flex space-x-3">
               <button
                 onClick={onClose}
-                className="flex-1 bg-gray-700 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600 transition-colors"
+                className="flex-1 bg-gray-700/60 text-white py-3 rounded-2xl font-semibold hover:bg-gray-600/60 transition-all duration-300 transform hover:scale-105 border border-gray-600/50"
               >
                 Cancel
               </button>
@@ -181,7 +182,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ onClose }) => {
                   onClose();
                 }}
                 disabled={!walletAddress || !amount}
-                className="flex-1 bg-blue-600 text-white py-3 rounded-2xl font-semibold hover:bg-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-[#FDDA24] hover:bg-[#e6c520] text-black py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[#FDDA24]/30"
               >
                 Generate QR Code
               </button>

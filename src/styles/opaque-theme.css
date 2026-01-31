@@ -1,0 +1,426 @@
+/* OPAQUE Design System - Cyberpunk Privacy Tech Theme */
+/* Extracted from Landing Page and applied site-wide */
+
+/* ========================================
+   CSS Custom Properties (Design Tokens)
+   ======================================== */
+:root {
+  /* Colors - Primary Palette */
+  --opaque-black: #000000;
+  --opaque-black-light: #0b0b0b;
+  --opaque-black-card: #111111;
+  --opaque-accent: #fdda24;
+  --opaque-accent-bright: #ffe552;
+  --opaque-accent-hover: #e6c520;
+  --opaque-accent-dim: rgba(253, 218, 36, 0.15);
+  --opaque-accent-glow: rgba(253, 218, 36, 0.5);
+  --opaque-accent-intense: rgba(253, 218, 36, 0.8);
+
+  /* Colors - Text */
+  --opaque-text-primary: #ffffff;
+  --opaque-text-secondary: #a0a0a0;
+  --opaque-text-muted: #6b6b6b;
+  --opaque-text-disabled: #404040;
+
+  /* Colors - Status */
+  --opaque-success: #10b981;
+  --opaque-success-dim: rgba(16, 185, 129, 0.2);
+  --opaque-error: #ef4444;
+  --opaque-error-dim: rgba(239, 68, 68, 0.2);
+  --opaque-warning: #f59e0b;
+  --opaque-warning-dim: rgba(245, 158, 11, 0.2);
+  --opaque-info: #3b82f6;
+  --opaque-info-dim: rgba(59, 130, 246, 0.2);
+
+  /* Colors - UI Elements */
+  --opaque-border: rgba(255, 255, 255, 0.1);
+  --opaque-border-focus: rgba(253, 218, 36, 0.5);
+  --opaque-card-bg: rgba(17, 17, 17, 0.8);
+  --opaque-card-bg-light: rgba(40, 40, 40, 0.6);
+  --opaque-overlay: rgba(0, 0, 0, 0.8);
+
+  /* Gradients */
+  --opaque-gradient-bg: linear-gradient(180deg, #000000 0%, #050505 50%, #0a0a0a 100%);
+  --opaque-gradient-card: linear-gradient(135deg, rgba(17, 17, 17, 0.8) 0%, rgba(30, 30, 30, 0.6) 100%);
+  --opaque-gradient-accent: linear-gradient(135deg, #fdda24 0%, #ffe552 100%);
+  --opaque-gradient-overlay: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(253, 218, 36, 0.03) 0%, transparent 50%);
+
+  /* Spacing */
+  --opaque-space-xs: 0.25rem;    /* 4px */
+  --opaque-space-sm: 0.5rem;     /* 8px */
+  --opaque-space-md: 1rem;       /* 16px */
+  --opaque-space-lg: 1.5rem;     /* 24px */
+  --opaque-space-xl: 2rem;       /* 32px */
+  --opaque-space-2xl: 3rem;      /* 48px */
+  --opaque-space-3xl: 4rem;      /* 64px */
+
+  /* Border Radius */
+  --opaque-radius-sm: 8px;
+  --opaque-radius-md: 12px;
+  --opaque-radius-lg: 16px;
+  --opaque-radius-xl: 20px;
+  --opaque-radius-2xl: 24px;
+  --opaque-radius-3xl: 32px;
+  --opaque-radius-full: 9999px;
+
+  /* Shadows */
+  --opaque-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --opaque-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --opaque-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --opaque-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --opaque-shadow-accent: 0 10px 30px -5px rgba(253, 218, 36, 0.3);
+  --opaque-shadow-accent-lg: 0 20px 40px -5px rgba(253, 218, 36, 0.4);
+
+  /* Transitions */
+  --opaque-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --opaque-transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  --opaque-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Typography */
+  --opaque-font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+}
+
+/* ========================================
+   Base Layout Classes
+   ======================================== */
+.opaque-page {
+  min-height: 100vh;
+  background: var(--opaque-gradient-bg);
+  color: var(--opaque-text-primary);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.opaque-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--opaque-gradient-overlay);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.opaque-content {
+  position: relative;
+  z-index: 10;
+}
+
+.opaque-container {
+  container: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--opaque-space-lg);
+}
+
+/* ========================================
+   Card Components
+   ======================================== */
+.opaque-card {
+  background: var(--opaque-gradient-card);
+  border: 1px solid var(--opaque-border);
+  border-radius: var(--opaque-radius-2xl);
+  backdrop-filter: blur(16px);
+  transition: all var(--opaque-transition);
+}
+
+.opaque-card:hover {
+  border-color: var(--opaque-accent-dim);
+  transform: translateY(-2px);
+  box-shadow: var(--opaque-shadow-accent);
+}
+
+.opaque-card-lg {
+  padding: var(--opaque-space-2xl);
+}
+
+.opaque-card-md {
+  padding: var(--opaque-space-xl);
+}
+
+.opaque-card-sm {
+  padding: var(--opaque-space-lg);
+}
+
+/* ========================================
+   Button Components
+   ======================================== */
+.opaque-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--opaque-space-sm);
+  font-weight: 600;
+  border-radius: var(--opaque-radius-full);
+  transition: all var(--opaque-transition);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.opaque-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Primary Button */
+.opaque-btn-primary {
+  background: var(--opaque-gradient-accent);
+  color: var(--opaque-black);
+  box-shadow: var(--opaque-shadow-accent);
+}
+
+.opaque-btn-primary:hover:not(:disabled) {
+  background: var(--opaque-accent-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: var(--opaque-shadow-accent-lg);
+}
+
+/* Secondary Button */
+.opaque-btn-secondary {
+  background: var(--opaque-card-bg-light);
+  color: var(--opaque-text-primary);
+  border: 1px solid var(--opaque-border);
+}
+
+.opaque-btn-secondary:hover:not(:disabled) {
+  background: var(--opaque-card-bg);
+  border-color: var(--opaque-accent-dim);
+  transform: translateY(-1px);
+}
+
+/* Ghost Button */
+.opaque-btn-ghost {
+  background: transparent;
+  color: var(--opaque-text-secondary);
+  border: 1px solid transparent;
+}
+
+.opaque-btn-ghost:hover:not(:disabled) {
+  background: var(--opaque-card-bg-light);
+  border-color: var(--opaque-border);
+  color: var(--opaque-text-primary);
+}
+
+/* Button Sizes */
+.opaque-btn-sm {
+  padding: var(--opaque-space-sm) var(--opaque-space-lg);
+  font-size: 0.875rem;
+}
+
+.opaque-btn-md {
+  padding: var(--opaque-space-md) var(--opaque-space-xl);
+  font-size: 1rem;
+}
+
+.opaque-btn-lg {
+  padding: var(--opaque-space-lg) var(--opaque-space-2xl);
+  font-size: 1.125rem;
+}
+
+.opaque-btn-xl {
+  padding: var(--opaque-space-xl) var(--opaque-space-3xl);
+  font-size: 1.25rem;
+}
+
+/* ========================================
+   Input Components
+   ======================================== */
+.opaque-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--opaque-border);
+  border-radius: var(--opaque-radius-lg);
+  padding: var(--opaque-space-md) var(--opaque-space-lg);
+  color: var(--opaque-text-primary);
+  font-size: 1rem;
+  transition: all var(--opaque-transition);
+}
+
+.opaque-input:focus {
+  outline: none;
+  border-color: var(--opaque-border-focus);
+  box-shadow: 0 0 0 3px var(--opaque-accent-dim);
+}
+
+.opaque-input::placeholder {
+  color: var(--opaque-text-muted);
+}
+
+.opaque-textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: var(--opaque-font-mono);
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   Status Classes
+   ======================================== */
+.opaque-status-success {
+  background: var(--opaque-success-dim);
+  border-color: var(--opaque-success);
+  color: var(--opaque-success);
+}
+
+.opaque-status-error {
+  background: var(--opaque-error-dim);
+  border-color: var(--opaque-error);
+  color: var(--opaque-error);
+}
+
+.opaque-status-warning {
+  background: var(--opaque-warning-dim);
+  border-color: var(--opaque-warning);
+  color: var(--opaque-warning);
+}
+
+.opaque-status-info {
+  background: var(--opaque-info-dim);
+  border-color: var(--opaque-info);
+  color: var(--opaque-info);
+}
+
+/* ========================================
+   Typography
+   ======================================== */
+.opaque-heading {
+  background: linear-gradient(135deg, var(--opaque-text-primary) 0%, var(--opaque-text-secondary) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.opaque-text-accent {
+  color: var(--opaque-accent);
+}
+
+.opaque-text-muted {
+  color: var(--opaque-text-muted);
+}
+
+.opaque-text-mono {
+  font-family: var(--opaque-font-mono);
+}
+
+/* ========================================
+   Animation Classes
+   ======================================== */
+.opaque-fade-in {
+  animation: opaquefade 0.6s ease-out;
+}
+
+.opaque-slide-up {
+  animation: opaqueSlideUp 0.6s ease-out;
+}
+
+.opaque-pulse {
+  animation: opaquePulse 2s ease-in-out infinite;
+}
+
+.opaque-glow {
+  filter: drop-shadow(0 0 20px var(--opaque-accent-glow));
+}
+
+@keyframes opaqueF opaque {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes opaqueSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes opaquePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+.opaque-backdrop-blur {
+  backdrop-filter: blur(16px);
+}
+
+.opaque-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.opaque-loading::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(253, 218, 36, 0.2),
+    transparent
+  );
+  animation: opaqueLoading 2s infinite;
+}
+
+@keyframes opaqueLoading {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
+}
+
+.opaque-grid {
+  display: grid;
+  gap: var(--opaque-space-lg);
+}
+
+.opaque-flex {
+  display: flex;
+  align-items: center;
+  gap: var(--opaque-space-md);
+}
+
+.opaque-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   Responsive Utilities
+   ======================================== */
+@media (max-width: 768px) {
+  .opaque-container {
+    padding: 0 var(--opaque-space-md);
+  }
+
+  .opaque-card-lg {
+    padding: var(--opaque-space-lg);
+  }
+
+  .opaque-btn-lg,
+  .opaque-btn-xl {
+    padding: var(--opaque-space-md) var(--opaque-space-xl);
+    font-size: 1rem;
+  }
+}

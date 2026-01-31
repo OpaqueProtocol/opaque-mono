@@ -12,8 +12,8 @@ const formatNetworkName = (name: string) =>
 
 const appNetwork = formatNetworkName(stellarNetwork);
 
-const bgColor = "#F0F2F5";
-const textColor = "#4A5362";
+const bgColor = "rgba(17, 17, 17, 0.8)";
+const textColor = "#a0a0a0";
 
 const NetworkPill: React.FC = () => {
   const { network, address } = useWallet();
@@ -23,13 +23,13 @@ const NetworkPill: React.FC = () => {
   const isNetworkMismatch = walletNetwork !== appNetwork;
 
   let title = "";
-  let color = "#2ED06E";
+  let color = "#10b981";
   if (!address) {
     title = "Connect your wallet using this network.";
-    color = "#C1C7D0";
+    color = "#6b6b6b";
   } else if (isNetworkMismatch) {
     title = `Wallet is on ${walletNetwork}, connect to ${appNetwork} instead.`;
-    color = "#FF3B30";
+    color = "#ef4444";
   }
 
   return (
@@ -37,14 +37,17 @@ const NetworkPill: React.FC = () => {
       style={{
         backgroundColor: bgColor,
         color: textColor,
-        padding: "4px 10px",
-        borderRadius: "16px",
+        padding: "6px 12px",
+        borderRadius: "20px",
         fontSize: "12px",
-        fontWeight: "bold",
+        fontWeight: "600",
         display: "flex",
         alignItems: "center",
-        gap: "4px",
+        gap: "6px",
         cursor: isNetworkMismatch ? "help" : "default",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        backdropFilter: "blur(16px)",
+        transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1)",
       }}
       title={title}
     >
