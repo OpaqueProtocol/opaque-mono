@@ -3,7 +3,7 @@
  * Matches the Rust lean-incremental-merkle-tree contract implementation
  */
 
-import { poseidonHash, bigintToBuffer, bufferToBigint } from './crypto';
+import { poseidonHash, bufferToBigint } from './crypto';
 
 // Tree depth matching the contract (supports 1024 deposits)
 export const TREE_DEPTH = 8; // Reduced from 20 to fit Soroban budget

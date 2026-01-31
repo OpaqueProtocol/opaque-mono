@@ -5,7 +5,6 @@
 
 // @ts-expect-error snarkjs has no official types
 import * as snarkjs from 'snarkjs';
-import { bigintToBuffer } from './crypto';
 
 // Circuit artifacts paths (relative to public folder)
 const CIRCUIT_WASM_PATH = '/circuits/main.wasm';

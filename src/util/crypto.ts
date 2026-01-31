@@ -3,18 +3,7 @@
  * Uses Poseidon hash matching the circom circuit implementation
  */
 
-// Type declarations for circomlibjs (no official types available)
-declare module 'circomlibjs' {
-  export function buildPoseidon(): Promise<{
-    (inputs: bigint[]): Uint8Array;
-    F: {
-      toString(v: Uint8Array): string;
-      toObject(v: Uint8Array): bigint;
-      e(v: bigint | string | number): bigint;
-    };
-  }>;
-}
-
+// @ts-expect-error circomlibjs has no official types
 import { buildPoseidon } from 'circomlibjs';
 
 // BN254 curve scalar field (same as used in the circuit)

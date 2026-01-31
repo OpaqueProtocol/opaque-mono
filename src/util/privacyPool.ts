@@ -26,9 +26,6 @@ import {
   initializeZeroValues,
 } from './merkle';
 import {
-  generateWithdrawProof,
-  serializeProofForSoroban,
-  serializePublicSignalsForSoroban,
   createWithdrawCircuitInput,
 } from './zkproof';
 
@@ -111,10 +108,10 @@ export async function handleDeposit(
         // Try different ways to extract the leaf index
         if (typeof result.result === 'number') {
           leafIndex = result.result;
-        } else if (result.result.isOk && typeof result.result.isOk === 'function') {
-          leafIndex = result.result.isOk() ? result.result.unwrap() : 0;
-        } else if (result.result.value !== undefined) {
-          leafIndex = Number(result.result.value);
+        } else if (typeof result.result === 'object' && 'isOk' in result.result && typeof result.result.isOk === 'function') {
+          leafIndex = result.result.isOk() ? (result.result as { unwrap: () => number }).unwrap() : 0;
+        } else if (typeof result.result === 'object' && 'value' in result.result) {
+          leafIndex = Number((result.result as { value: unknown }).value);
         }
       }
     } catch (parseError) {
@@ -336,7 +333,7 @@ export async function handleWithdraw(
     console.log('[Withdraw] Using association root from contract:', effectiveAssociationRoot.toString(16));
     console.log('[Withdraw] Mock computed root:', mockProof.associationRoot.toString(16));
 
-    // 8. Create circuit input
+    // 8. Create circuit input (logged for debugging, actual proof skipped in demo)
     const circuitInput = createWithdrawCircuitInput({
       withdrawnValue: FIXED_AMOUNT_STROOPS,
       stateRoot: merkleProof.root,
@@ -350,6 +347,7 @@ export async function handleWithdraw(
       labelIndex,
       labelSiblings,
     });
+    console.log('[Withdraw] Circuit input prepared:', Object.keys(circuitInput));
 
     // 9. DEMO MODE: Skip ZK proof generation (contract skips verification)
     // Just create mock proof bytes and public signals with nullifier
@@ -422,9 +420,8 @@ export async function validateNote(noteString: string): Promise<{
   try {
     const note = decodeNote(noteString);
     
-    // Verify the commitment can be computed
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _commitment = await computeCommitment(
+    // Verify the commitment can be computed (validates note data)
+    void await computeCommitment(
       note.value,
       note.label,
       note.nullifier,
