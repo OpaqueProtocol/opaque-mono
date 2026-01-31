@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Text, Modal, Profile } from "@stellar/design-system";
+import { Button, Text, Modal } from "@stellar/design-system";
 import { useWallet } from "../hooks/useWallet";
 import { connectWallet, disconnectWallet } from "../util/wallet";
 
@@ -10,7 +10,12 @@ export const WalletButton = () => {
 
   if (!address) {
     return (
-      <Button variant="primary" size="md" onClick={() => void connectWallet()}>
+      <Button
+        variant="primary"
+        size="md"
+        onClick={() => void connectWallet()}
+        className="bg-[#FDDA24] hover:bg-[#e6c520] text-black font-semibold px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
+      >
         {buttonLabel}
       </Button>
     );
@@ -18,17 +23,16 @@ export const WalletButton = () => {
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: "5px",
-        opacity: isPending ? 0.6 : 1,
-      }}
+      className={`flex items-center space-x-3 ${isPending ? "opacity-60" : "opacity-100"} transition-opacity`}
     >
-      <Text as="div" size="sm">
-        Wallet Balance: {balances?.xlm?.balance ?? "-"} XLM
-      </Text>
+      <div className="hidden lg:flex items-center space-x-3 bg-gray-900/60 rounded-full px-4 py-2 border border-gray-700/50">
+        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+        <Text as="div" size="sm" className="text-gray-300">
+          {balances?.xlm?.balance
+            ? `${parseFloat(balances.xlm.balance).toFixed(2)} XLM`
+            : "Loading..."}
+        </Text>
+      </div>
 
       <div id="modalContainer">
         <Modal
@@ -66,12 +70,20 @@ export const WalletButton = () => {
         </Modal>
       </div>
 
-      <Profile
-        publicAddress={address}
-        size="md"
-        isShort
-        onClick={() => setShowDisconnectModal(true)}
-      />
+      <div className="bg-gray-900/60 rounded-full px-4 py-2 border border-gray-700/50 flex items-center space-x-3 cursor-pointer hover:border-[#FDDA24]/50 transition-all duration-300">
+        <div className="w-8 h-8 bg-gradient-to-r from-[#FDDA24] to-yellow-300 rounded-full flex items-center justify-center">
+          <span className="text-black font-bold text-sm">
+            {address.charAt(0).toUpperCase()}
+          </span>
+        </div>
+        <span className="text-sm font-mono text-gray-300">
+          {address.slice(0, 6)}...{address.slice(-4)}
+        </span>
+        <button
+          onClick={() => setShowDisconnectModal(true)}
+          className="opacity-0 absolute inset-0 w-full h-full"
+        />
+      </div>
     </div>
   );
 };
