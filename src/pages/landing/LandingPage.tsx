@@ -67,7 +67,7 @@ const staggerItem = {
   },
 };
 
-// Animated card component with hover effects
+// Animated card component with subtle animations
 const AnimatedCard: React.FC<{
   children: React.ReactNode;
   className?: string;
@@ -81,13 +81,8 @@ const AnimatedCard: React.FC<{
       ref={ref}
       className={`landing-card ${className}`}
       initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      animate={isInView ? { opacity: 1, y: -8, scale: 1.01 } : {}}
       transition={{ duration: 0.7, delay, ease: "easeOut" }}
-      whileHover={{
-        y: -12,
-        scale: 1.02,
-        transition: { duration: 0.3, ease: "easeOut" },
-      }}
     >
       {children}
     </motion.div>
@@ -269,7 +264,7 @@ const LandingPage: React.FC = () => {
         {/* Hero Content - Z-Index above visuals */}
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
           {/* Headline with cinematic reveal */}
-          <div className="hero-headline mb-8">
+          <div className="hero-headline mb-4">
             <motion.div className="hero-text-line">
               <motion.span
                 className="hero-word block"
@@ -277,18 +272,7 @@ const LandingPage: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
               >
-                Privacy you
-              </motion.span>
-            </motion.div>
-
-            <motion.div className="hero-text-line">
-              <motion.span
-                className="hero-word block"
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.7 }}
-              >
-                <span className="hero-flicker">can't trace.</span>
+                Privacy you <span className="hero-flicker">can't trace.</span>
               </motion.span>
             </motion.div>
 
@@ -317,7 +301,7 @@ const LandingPage: React.FC = () => {
 
           {/* Subheadline - Delayed fade in */}
           <motion.p
-            className="hero-subheadline text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10"
+            className="hero-subheadline text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.8, ease: "easeOut" }}
@@ -331,7 +315,7 @@ const LandingPage: React.FC = () => {
 
           {/* CTAs - Powered feel */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2.2, ease: "easeOut" }}
@@ -353,7 +337,7 @@ const LandingPage: React.FC = () => {
 
           {/* Stats badges - Subtle fade */}
           <motion.div
-            className="mt-20 flex flex-wrap justify-center gap-10 text-sm text-gray-500 font-medium tracking-wide uppercase"
+            className="flex flex-wrap justify-center gap-6 text-sm text-gray-500 font-medium tracking-wide uppercase"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 2.8 }}
@@ -429,7 +413,12 @@ const LandingPage: React.FC = () => {
               <AnimatedCard key={item.title} delay={index * 0.1}>
                 <motion.div
                   className="feature-icon"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  animate={{ scale: 1.05, rotate: 3 }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
                 >
                   <item.icon />
                 </motion.div>
@@ -497,7 +486,12 @@ const LandingPage: React.FC = () => {
               <AnimatedCard key={item.title} delay={index * 0.1}>
                 <motion.div
                   className="feature-icon"
-                  whileHover={{ scale: 1.1, rotate: -5 }}
+                  animate={{ scale: 1.05, rotate: -2 }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
                 >
                   <item.icon />
                 </motion.div>
@@ -576,11 +570,16 @@ const LandingPage: React.FC = () => {
                     delay: index * 0.15,
                     ease: "easeOut",
                   }}
-                  whileHover={{ scale: 1.05 }}
                 >
                   <motion.div
                     className="arch-node-icon"
-                    whileHover={{ scale: 1.2, rotate: 10 }}
+                    animate={{ scale: 1.1, rotate: 5 }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      delay: index * 0.2,
+                    }}
                   >
                     <node.icon />
                   </motion.div>
@@ -660,7 +659,13 @@ const LandingPage: React.FC = () => {
               <AnimatedCard key={item.title} delay={index * 0.1}>
                 <motion.div
                   className="feature-icon"
-                  whileHover={{ scale: 1.15, rotate: 5 }}
+                  animate={{ scale: 1.08, rotate: 2 }}
+                  transition={{
+                    duration: 2.2,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    delay: index * 0.3,
+                  }}
                 >
                   <item.icon />
                 </motion.div>
@@ -721,14 +726,18 @@ const LandingPage: React.FC = () => {
                 className="flex flex-col items-center gap-4"
                 variants={staggerItem}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                whileHover={{ y: -5, scale: 1.05 }}
               >
                 <motion.div
                   className="compliance-icon"
-                  whileHover={{
-                    boxShadow: "0 0 40px rgba(253,218,36,0.5)",
-                    scale: 1.1,
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(253,218,36,0.3)",
+                      "0 0 30px rgba(253,218,36,0.5)",
+                      "0 0 20px rgba(253,218,36,0.3)",
+                    ],
+                    scale: [1.02, 1.06, 1.02],
                   }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
                   <item.icon size={28} className="text-[#FDDA24]" />
                 </motion.div>
@@ -783,13 +792,21 @@ const LandingPage: React.FC = () => {
                 className="team-card"
                 variants={fadeInScale}
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                whileHover={{ scale: 1.08, y: -8 }}
               >
                 <motion.div
                   className="team-avatar"
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: "0 0 40px rgba(253,218,36,0.5)",
+                  animate={{
+                    scale: [1.02, 1.05, 1.02],
+                    boxShadow: [
+                      "0 0 15px rgba(253,218,36,0.2)",
+                      "0 0 25px rgba(253,218,36,0.4)",
+                      "0 0 15px rgba(253,218,36,0.2)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
                   }}
                 >
                   {member.initials}
@@ -850,11 +867,6 @@ const LandingPage: React.FC = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            whileHover={{
-              scale: 1.08,
-              boxShadow:
-                "0 0 60px rgba(253,218,36,0.6), 0 0 100px rgba(253,218,36,0.3)",
-            }}
             whileTap={{ scale: 0.95 }}
           >
             Join the Testnet
@@ -876,10 +888,7 @@ const LandingPage: React.FC = () => {
             transition={{ duration: 0.6 }}
           >
             {/* Logo */}
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-            >
+            <motion.div className="flex items-center gap-3">
               <motion.div
                 className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FDDA24] to-yellow-300 flex items-center justify-center"
                 animate={{
@@ -921,7 +930,6 @@ const LandingPage: React.FC = () => {
                       : undefined
                   }
                   className="footer-link flex items-center gap-2"
-                  whileHover={{ scale: 1.05, color: "#FDDA24" }}
                 >
                   <link.icon size={16} />
                   {link.text}
