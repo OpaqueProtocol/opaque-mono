@@ -5,6 +5,7 @@ import {
   Code as CodeIcon,
   Menu as MenuIcon,
   ArrowDownCircle,
+  ArrowUpCircle,
 } from "lucide-react";
 import ConnectAccount from "./components/ConnectAccount.tsx";
 import { Routes, Route, Outlet, NavLink } from "react-router-dom";
@@ -12,6 +13,8 @@ import LandingPage from "./pages/landing/LandingPage";
 import Debugger from "./pages/Debugger.tsx";
 import Wallet from "./pages/Wallet";
 import Deposit from "./pages/Deposit";
+import PrivacyDeposit from "./pages/PrivacyDeposit";
+import PrivacyWithdraw from "./pages/PrivacyWithdraw";
 
 const AppLayout: React.FC = () => (
   <main className="min-h-screen bg-black">
@@ -74,7 +77,7 @@ const AppLayout: React.FC = () => (
                 )}
               </NavLink>
 
-              <NavLink to="/deposit">
+              <NavLink to="/privacy-deposit">
                 {({ isActive }) => (
                   <div
                     className={`${
@@ -83,11 +86,29 @@ const AppLayout: React.FC = () => (
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
                     } rounded-lg px-4 py-2 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
                     onClick={() =>
-                      !isActive && (window.location.href = "/deposit")
+                      !isActive && (window.location.href = "/privacy-deposit")
                     }
                   >
                     <ArrowDownCircle size={16} />
                     <span>Deposit</span>
+                  </div>
+                )}
+              </NavLink>
+
+              <NavLink to="/privacy-withdraw">
+                {({ isActive }) => (
+                  <div
+                    className={`${
+                      isActive
+                        ? "bg-[#FDDA24] text-black shadow-lg shadow-[#FDDA24]/30"
+                        : "text-gray-400 hover:text-white hover:bg-gray-800/60"
+                    } rounded-xl px-6 py-3 font-medium transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 cursor-pointer`}
+                    onClick={() =>
+                      !isActive && (window.location.href = "/privacy-withdraw")
+                    }
+                  >
+                    <ArrowUpCircle size={18} />
+                    <span>Withdraw</span>
                   </div>
                 )}
               </NavLink>
@@ -158,7 +179,7 @@ const AppLayout: React.FC = () => (
                   </div>
                 )}
               </NavLink>
-              <NavLink to="/deposit" className="flex-1">
+              <NavLink to="/privacy-deposit" className="flex-1">
                 {({ isActive }) => (
                   <div
                     className={`${
@@ -167,10 +188,26 @@ const AppLayout: React.FC = () => (
                         : "text-gray-400 hover:text-white hover:bg-gray-800/60"
                     } rounded-lg px-3 py-2 font-medium transition-all duration-300 text-center cursor-pointer`}
                     onClick={() =>
-                      !isActive && (window.location.href = "/deposit")
+                      !isActive && (window.location.href = "/privacy-deposit")
                     }
                   >
                     Deposit
+                  </div>
+                )}
+              </NavLink>
+              <NavLink to="/privacy-withdraw" className="flex-1">
+                {({ isActive }) => (
+                  <div
+                    className={`${
+                      isActive
+                        ? "bg-[#FDDA24] text-black"
+                        : "text-gray-400 hover:text-white hover:bg-gray-800/60"
+                    } rounded-xl px-4 py-3 font-medium transition-all duration-300 text-center cursor-pointer`}
+                    onClick={() =>
+                      !isActive && (window.location.href = "/privacy-withdraw")
+                    }
+                  >
+                    Withdraw
                   </div>
                 )}
               </NavLink>
@@ -231,6 +268,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/deposit" element={<Deposit />} />
+        <Route path="/privacy-deposit" element={<PrivacyDeposit />} />
+        <Route path="/privacy-withdraw" element={<PrivacyWithdraw />} />
         <Route path="/debug" element={<Debugger />} />
         <Route path="/debug/:contractName" element={<Debugger />} />
       </Route>

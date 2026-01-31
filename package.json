@@ -27,6 +27,8 @@
     "@types/json-schema": "^7.0.15",
     "bignumber.js": "^9.3.1",
     "framer-motion": "^12.29.2",
+    "circomlibjs": "^0.1.7",
+    "ffjavascript": "^0.3.1",
     "json-schema": "^0.4.0",
     "lodash": "^4.17.23",
     "lossless-json": "^4.3.0",
@@ -34,6 +36,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6",
+    "snarkjs": "^0.7.6",
     "tailwindcss": "^4.1.18",
     "zod": "^4.1.13"
   },
