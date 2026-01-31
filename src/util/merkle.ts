@@ -3,7 +3,7 @@
  * Matches the Rust lean-incremental-merkle-tree contract implementation
  */
 
-import { poseidonHash, bufferToBigint } from './crypto';
+import { poseidonHash, bufferToBigint } from "./crypto";
 
 // Tree depth matching the contract (supports 1024 deposits)
 export const TREE_DEPTH = 8; // Reduced from 20 to fit Soroban budget
@@ -27,7 +27,7 @@ export async function initializeZeroValues(): Promise<bigint[]> {
     const prevZero = ZERO_VALUES[i - 1];
     ZERO_VALUES[i] = await poseidonHash([prevZero, prevZero]);
   }
-  
+
   return ZERO_VALUES;
 }
 
@@ -60,11 +60,11 @@ export class LeanMerkleTree {
   addLeaf(leaf: bigint): number {
     const index = this.leaves.length;
     const maxLeaves = 2 ** this.depth;
-    
+
     if (index >= maxLeaves) {
-      throw new Error('Tree at capacity');
+      throw new Error("Tree at capacity");
     }
-    
+
     this.leaves.push(leaf);
     return index;
   }
@@ -88,7 +88,7 @@ export class LeanMerkleTree {
    */
   async computeRoot(): Promise<bigint> {
     const zeros = await initializeZeroValues();
-    
+
     if (this.leaves.length === 0) {
       return zeros[this.depth];
     }
@@ -103,7 +103,8 @@ export class LeanMerkleTree {
 
       for (let i = 0; i < currentLayer.length; i += 2) {
         const left = currentLayer[i];
-        const right = i + 1 < currentLayer.length ? currentLayer[i + 1] : zeroAtLevel;
+        const right =
+          i + 1 < currentLayer.length ? currentLayer[i + 1] : zeroAtLevel;
         const parent = await poseidonHash([left, right]);
         nextLayer.push(parent);
       }
@@ -142,10 +143,11 @@ export class LeanMerkleTree {
 
     for (let level = 0; level < this.depth; level++) {
       const zeroAtLevel = zeros[level];
-      
+
       // Get sibling
-      const siblingIndex = currentIndex % 2 === 0 ? currentIndex + 1 : currentIndex - 1;
-      
+      const siblingIndex =
+        currentIndex % 2 === 0 ? currentIndex + 1 : currentIndex - 1;
+
       if (siblingIndex < currentLayer.length) {
         siblings.push(currentLayer[siblingIndex]);
       } else {
@@ -156,7 +158,8 @@ export class LeanMerkleTree {
       const nextLayer: bigint[] = [];
       for (let i = 0; i < currentLayer.length; i += 2) {
         const left = currentLayer[i];
-        const right = i + 1 < currentLayer.length ? currentLayer[i + 1] : zeroAtLevel;
+        const right =
+          i + 1 < currentLayer.length ? currentLayer[i + 1] : zeroAtLevel;
         const parent = await poseidonHash([left, right]);
         nextLayer.push(parent);
       }
@@ -180,7 +183,7 @@ export class LeanMerkleTree {
     leaf: bigint,
     leafIndex: number,
     siblings: bigint[],
-    root: bigint
+    root: bigint,
   ): Promise<boolean> {
     if (siblings.length !== this.depth) {
       return false;
@@ -192,13 +195,13 @@ export class LeanMerkleTree {
     for (let i = 0; i < this.depth; i++) {
       const sibling = siblings[i];
       const isLeft = currentIndex % 2 === 0;
-      
+
       if (isLeft) {
         currentHash = await poseidonHash([currentHash, sibling]);
       } else {
         currentHash = await poseidonHash([sibling, currentHash]);
       }
-      
+
       currentIndex = Math.floor(currentIndex / 2);
     }
 
@@ -208,7 +211,10 @@ export class LeanMerkleTree {
   /**
    * Create tree from existing leaves (e.g., fetched from contract)
    */
-  static fromLeaves(leaves: bigint[], depth: number = TREE_DEPTH): LeanMerkleTree {
+  static fromLeaves(
+    leaves: bigint[],
+    depth: number = TREE_DEPTH,
+  ): LeanMerkleTree {
     const tree = new LeanMerkleTree(depth);
     tree.leaves = [...leaves];
     return tree;
@@ -217,8 +223,11 @@ export class LeanMerkleTree {
   /**
    * Create tree from Buffer leaves (as returned by contract)
    */
-  static fromBufferLeaves(buffers: Buffer[], depth: number = TREE_DEPTH): LeanMerkleTree {
-    const leaves = buffers.map(buf => bufferToBigint(buf));
+  static fromBufferLeaves(
+    buffers: Buffer[],
+    depth: number = TREE_DEPTH,
+  ): LeanMerkleTree {
+    const leaves = buffers.map((buf) => bufferToBigint(buf));
     return LeanMerkleTree.fromLeaves(leaves, depth);
   }
 }
@@ -227,7 +236,7 @@ export class LeanMerkleTree {
  * Build Merkle tree from commitments fetched from contract
  */
 export async function buildMerkleTreeFromCommitments(
-  commitments: Buffer[]
+  commitments: Buffer[],
 ): Promise<LeanMerkleTree> {
   const tree = LeanMerkleTree.fromBufferLeaves(commitments, TREE_DEPTH);
   return tree;
@@ -238,7 +247,7 @@ export async function buildMerkleTreeFromCommitments(
  */
 export async function getMerkleProof(
   tree: LeanMerkleTree,
-  leafIndex: number
+  leafIndex: number,
 ): Promise<{
   siblings: bigint[];
   root: bigint;
@@ -246,7 +255,7 @@ export async function getMerkleProof(
 }> {
   const siblings = await tree.getMerklePath(leafIndex);
   const root = await tree.computeRoot();
-  
+
   return {
     siblings,
     root,
@@ -258,5 +267,5 @@ export async function getMerkleProof(
  * Convert Merkle proof siblings to string array for circuit input
  */
 export function siblingsToCircuitInput(siblings: bigint[]): string[] {
-  return siblings.map(s => s.toString());
+  return siblings.map((s) => s.toString());
 }

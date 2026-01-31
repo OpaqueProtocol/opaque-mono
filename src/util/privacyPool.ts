@@ -3,9 +3,9 @@
  * Orchestrates crypto operations, Merkle tree building, and contract calls
  */
 
-import { Buffer } from 'buffer';
-import { Client as OpaqueClient } from 'opaque';
-import { rpcUrl, networkPassphrase } from '../contracts/util';
+import { Buffer } from "buffer";
+import { Client as OpaqueClient } from "opaque";
+import { rpcUrl, networkPassphrase } from "../contracts/util";
 import {
   generateSecrets,
   computeCommitment,
@@ -18,19 +18,18 @@ import {
   FIXED_AMOUNT_STROOPS,
   DepositNote,
   poseidonHash,
-} from './crypto';
+} from "./crypto";
 import {
   LeanMerkleTree,
   getMerkleProof,
   TREE_DEPTH,
   initializeZeroValues,
-} from './merkle';
-import {
-  createWithdrawCircuitInput,
-} from './zkproof';
+} from "./merkle";
+import { createWithdrawCircuitInput } from "./zkproof";
 
 // Contract ID from environment
-const OPAQUE_CONTRACT_ID = 'CBXMTRWEM63PQF76XQ36JLIGQHBDKFKMZRDDUFKNBJPWCINQJTWHXPKK';
+const OPAQUE_CONTRACT_ID =
+  "CBXMTRWEM63PQF76XQ36JLIGQHBDKFKMZRDDUFKNBJPWCINQJTWHXPKK";
 
 /**
  * Create a new Opaque client instance
@@ -57,68 +56,86 @@ export interface DepositResult {
 
 /**
  * Handle a deposit to the privacy pool
- * 
+ *
  * @param fromAddress - The depositor's wallet address
  * @param signTransaction - Function to sign the transaction (from wallet provider)
  * @returns Deposit result with note to save
  */
 export async function handleDeposit(
   fromAddress: string,
-  signTransaction: (xdr: string, opts?: { networkPassphrase?: string; address?: string }) => Promise<{ signedTxXdr: string; signerAddress?: string }>
+  signTransaction: (
+    xdr: string,
+    opts?: { networkPassphrase?: string; address?: string },
+  ) => Promise<{ signedTxXdr: string; signerAddress?: string }>,
 ): Promise<DepositResult> {
   try {
-    console.log('[Deposit] Starting deposit for:', fromAddress);
+    console.log("[Deposit] Starting deposit for:", fromAddress);
 
     // 1. Generate secrets
     const { nullifier, secret } = generateSecrets();
-    console.log('[Deposit] Generated secrets');
+    console.log("[Deposit] Generated secrets");
 
     // 2. Generate label (using default scope and timestamp as nonce)
-    const label = await generateLabel('opaque-pool', Date.now());
-    console.log('[Deposit] Generated label');
+    const label = await generateLabel("opaque-pool", Date.now());
+    console.log("[Deposit] Generated label");
 
     // 3. Compute commitment
     const value = FIXED_AMOUNT_STROOPS;
     const commitment = await computeCommitment(value, label, nullifier, secret);
-    console.log('[Deposit] Computed commitment:', commitment.toString(16));
+    console.log("[Deposit] Computed commitment:", commitment.toString(16));
 
     // 4. Convert commitment to 32-byte buffer
     const commitmentBuffer = bigintToBuffer(commitment);
-    console.log('[Deposit] Commitment buffer:', commitmentBuffer.toString('hex'));
+    console.log(
+      "[Deposit] Commitment buffer:",
+      commitmentBuffer.toString("hex"),
+    );
 
     // 5. Create client and build transaction
     const client = createClient(fromAddress);
-    
-    console.log('[Deposit] Building transaction...');
+
+    console.log("[Deposit] Building transaction...");
     const tx = await client.deposit({
       from: fromAddress,
       commitment: commitmentBuffer,
     });
 
     // 6. Sign and submit transaction using the wallet's signTransaction directly
-    console.log('[Deposit] Signing and submitting transaction...');
+    console.log("[Deposit] Signing and submitting transaction...");
     const result = await tx.signAndSend({ signTransaction });
 
-    console.log('[Deposit] Transaction result:', result);
+    console.log("[Deposit] Transaction result:", result);
 
     // 7. Get leaf index from result - handle XDR parsing issues gracefully
     let leafIndex = 0;
     try {
       if (result.result) {
         // Try different ways to extract the leaf index
-        if (typeof result.result === 'number') {
+        if (typeof result.result === "number") {
           leafIndex = result.result;
-        } else if (typeof result.result === 'object' && 'isOk' in result.result && typeof result.result.isOk === 'function') {
-          leafIndex = result.result.isOk() ? (result.result as { unwrap: () => number }).unwrap() : 0;
-        } else if (typeof result.result === 'object' && 'value' in result.result) {
+        } else if (
+          typeof result.result === "object" &&
+          "isOk" in result.result &&
+          typeof result.result.isOk === "function"
+        ) {
+          leafIndex = result.result.isOk()
+            ? (result.result as { unwrap: () => number }).unwrap()
+            : 0;
+        } else if (
+          typeof result.result === "object" &&
+          "value" in result.result
+        ) {
           leafIndex = Number((result.result as { value: unknown }).value);
         }
       }
     } catch (parseError) {
-      console.warn('[Deposit] Could not parse leaf index from result, using 0:', parseError);
+      console.warn(
+        "[Deposit] Could not parse leaf index from result, using 0:",
+        parseError,
+      );
       // Transaction still succeeded, just couldn't parse leaf index
     }
-    console.log('[Deposit] Leaf index:', leafIndex);
+    console.log("[Deposit] Leaf index:", leafIndex);
 
     // 8. Encode note for user to save
     const note: DepositNote = {
@@ -129,7 +146,7 @@ export async function handleDeposit(
       leafIndex,
     };
     const encodedNote = encodeNote(note);
-    console.log('[Deposit] Generated note');
+    console.log("[Deposit] Generated note");
 
     return {
       success: true,
@@ -138,7 +155,7 @@ export async function handleDeposit(
       commitment: commitment.toString(16),
     };
   } catch (error) {
-    console.error('[Deposit] Error:', error);
+    console.error("[Deposit] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : String(error),
@@ -160,16 +177,16 @@ export interface WithdrawResult {
  */
 export async function fetchCommitmentsFromContract(): Promise<Buffer[]> {
   const client = createClient();
-  
-  console.log('[Withdraw] Fetching commitments from contract...');
+
+  console.log("[Withdraw] Fetching commitments from contract...");
   const tx = await client.get_commitments();
   const result = await tx.simulate();
-  
+
   if (!result.result) {
-    throw new Error('Failed to fetch commitments');
+    throw new Error("Failed to fetch commitments");
   }
-  
-  console.log('[Withdraw] Found', result.result.length, 'commitments');
+
+  console.log("[Withdraw] Found", result.result.length, "commitments");
   return result.result;
 }
 
@@ -178,14 +195,14 @@ export async function fetchCommitmentsFromContract(): Promise<Buffer[]> {
  */
 export async function fetchMerkleRoot(): Promise<Buffer> {
   const client = createClient();
-  
+
   const tx = await client.get_merkle_root();
   const result = await tx.simulate();
-  
+
   if (!result.result) {
-    throw new Error('Failed to fetch merkle root');
+    throw new Error("Failed to fetch merkle root");
   }
-  
+
   return result.result;
 }
 
@@ -194,14 +211,14 @@ export async function fetchMerkleRoot(): Promise<Buffer> {
  */
 export async function fetchAssociationRoot(): Promise<Buffer> {
   const client = createClient();
-  
+
   const tx = await client.get_association_root();
   const result = await tx.simulate();
-  
+
   if (!result.result) {
-    throw new Error('Failed to fetch association root');
+    throw new Error("Failed to fetch association root");
   }
-  
+
   return result.result;
 }
 
@@ -216,18 +233,18 @@ async function getMockAssociationProof(label: bigint): Promise<{
 }> {
   // For now, we build a simple association set containing just our label
   // This creates a tree with just one leaf (the label)
-  
+
   // Initialize zero values first
   await initializeZeroValues();
-  
+
   // The association tree has depth 2, so we need the label at index 0
   // and compute the root accordingly
   const zeros = await initializeZeroValues();
-  
+
   // Single leaf tree: root = hash(hash(label, zero[0]), zero[1])
   const level0Hash = await poseidonHash([label, zeros[0]]);
   const associationRoot = await poseidonHash([level0Hash, zeros[1]]);
-  
+
   return {
     associationRoot,
     labelIndex: 0,
@@ -237,7 +254,7 @@ async function getMockAssociationProof(label: bigint): Promise<{
 
 /**
  * Handle a withdrawal from the privacy pool
- * 
+ *
  * @param noteString - The deposit note string
  * @param toAddress - The recipient's wallet address
  * @param signTransaction - Function to sign the transaction
@@ -246,34 +263,41 @@ async function getMockAssociationProof(label: bigint): Promise<{
 export async function handleWithdraw(
   noteString: string,
   toAddress: string,
-  signTransaction: (xdr: string, opts?: { networkPassphrase?: string; address?: string }) => Promise<{ signedTxXdr: string; signerAddress?: string }>
+  signTransaction: (
+    xdr: string,
+    opts?: { networkPassphrase?: string; address?: string },
+  ) => Promise<{ signedTxXdr: string; signerAddress?: string }>,
 ): Promise<WithdrawResult> {
   try {
-    console.log('[Withdraw] Starting withdrawal to:', toAddress);
+    console.log("[Withdraw] Starting withdrawal to:", toAddress);
 
     // 1. Parse the note
     const note = decodeNote(noteString);
-    console.log('[Withdraw] Parsed note, leaf index:', note.leafIndex);
+    console.log("[Withdraw] Parsed note, leaf index:", note.leafIndex);
 
     // 2. Fetch commitments and build Merkle tree
     const commitments = await fetchCommitmentsFromContract();
     if (commitments.length === 0) {
-      throw new Error('No deposits found in contract');
+      throw new Error("No deposits found in contract");
     }
 
     // 3. Build local Merkle tree
     const tree = LeanMerkleTree.fromBufferLeaves(commitments, TREE_DEPTH);
-    console.log('[Withdraw] Built Merkle tree with', tree.getLeafCount(), 'leaves');
+    console.log(
+      "[Withdraw] Built Merkle tree with",
+      tree.getLeafCount(),
+      "leaves",
+    );
 
     // 4. Verify our commitment is in the tree
     const commitment = await computeCommitment(
       note.value,
       note.label,
       note.nullifier,
-      note.secret
+      note.secret,
     );
     const commitmentBuffer = bigintToBuffer(commitment);
-    
+
     // Find our commitment in the tree
     let foundIndex = -1;
     for (let i = 0; i < commitments.length; i++) {
@@ -282,26 +306,28 @@ export async function handleWithdraw(
         break;
       }
     }
-    
+
     if (foundIndex === -1) {
-      throw new Error('Commitment not found in tree. Invalid note or deposit not confirmed.');
+      throw new Error(
+        "Commitment not found in tree. Invalid note or deposit not confirmed.",
+      );
     }
-    console.log('[Withdraw] Found commitment at index:', foundIndex);
+    console.log("[Withdraw] Found commitment at index:", foundIndex);
 
     // 5. Get Merkle proof
     const merkleProof = await getMerkleProof(tree, foundIndex);
-    console.log('[Withdraw] Generated Merkle proof');
+    console.log("[Withdraw] Generated Merkle proof");
 
     // 6. Fetch association root from contract
     const associationRootBuffer = await fetchAssociationRoot();
     const associationRoot = bufferToBigint(associationRootBuffer);
-    console.log('[Withdraw] Association root:', associationRoot.toString(16));
+    console.log("[Withdraw] Association root:", associationRoot.toString(16));
 
     // 7. Handle association proof
     // The circuit has this constraint: associationRoot * (associationRoot - computedRoot) === 0
     // This means: if associationRoot is 0, any computedRoot is allowed
     //             if associationRoot is non-zero, computedRoot must equal associationRoot
-    // 
+    //
     // However, the contract REQUIRES associationRoot to be set (non-zero) before withdrawals.
     // So we need to generate an association proof that produces the stored association root.
     //
@@ -311,27 +337,35 @@ export async function handleWithdraw(
     // - The mock proof computes an association root from just our label
     // - If this matches the stored root (admin used same algorithm), withdrawal works
     // - If not, we pass the stored root and zeros for siblings (will fail verification, but shows flow)
-    
+
     let labelIndex = 0;
     let labelSiblings: bigint[] = [];
     let effectiveAssociationRoot: bigint;
-    
+
     if (associationRoot === BigInt(0)) {
       // Contract requires non-zero root - this case should not happen after setup
-      throw new Error('Association root not set. Admin must call set_association_root first.');
+      throw new Error(
+        "Association root not set. Admin must call set_association_root first.",
+      );
     }
-    
+
     // Generate a mock proof for our label - this computes what root we'd expect
     const mockProof = await getMockAssociationProof(note.label);
     labelIndex = mockProof.labelIndex;
     labelSiblings = mockProof.labelSiblings;
-    
+
     // Use the association root from the contract
-    // For the circuit to verify, the computed root from (label, labelIndex, labelSiblings) 
+    // For the circuit to verify, the computed root from (label, labelIndex, labelSiblings)
     // must equal the stored association root
     effectiveAssociationRoot = associationRoot;
-    console.log('[Withdraw] Using association root from contract:', effectiveAssociationRoot.toString(16));
-    console.log('[Withdraw] Mock computed root:', mockProof.associationRoot.toString(16));
+    console.log(
+      "[Withdraw] Using association root from contract:",
+      effectiveAssociationRoot.toString(16),
+    );
+    console.log(
+      "[Withdraw] Mock computed root:",
+      mockProof.associationRoot.toString(16),
+    );
 
     // 8. Create circuit input (logged for debugging, actual proof skipped in demo)
     const circuitInput = createWithdrawCircuitInput({
@@ -347,32 +381,35 @@ export async function handleWithdraw(
       labelIndex,
       labelSiblings,
     });
-    console.log('[Withdraw] Circuit input prepared:', Object.keys(circuitInput));
+    console.log(
+      "[Withdraw] Circuit input prepared:",
+      Object.keys(circuitInput),
+    );
 
     // 9. DEMO MODE: Skip ZK proof generation (contract skips verification)
     // Just create mock proof bytes and public signals with nullifier
-    console.log('[Withdraw] DEMO MODE: Skipping ZK proof generation...');
-    
+    console.log("[Withdraw] DEMO MODE: Skipping ZK proof generation...");
+
     // Compute nullifier hash (this is what the contract checks)
     const nullifierHash = await computeNullifierHash(note.nullifier);
-    console.log('[Withdraw] Nullifier hash:', nullifierHash.toString(16));
-    
+    console.log("[Withdraw] Nullifier hash:", nullifierHash.toString(16));
+
     // Create mock proof bytes (empty, contract ignores them)
     const proofBytes = Buffer.alloc(0);
-    
+
     // Create public signals with nullifier hash as first 32 bytes (after 4-byte length prefix)
     // Format: [4 bytes length prefix][32 bytes nullifier hash]
     const pubSignalsBytes = Buffer.alloc(36);
     pubSignalsBytes.writeUint32BE(1, 0); // Length prefix: 1 signal
     const nullifierBuffer = bigintToBuffer(nullifierHash);
     nullifierBuffer.copy(pubSignalsBytes, 4, 0, 32);
-    
-    console.log('[Withdraw] Mock proof created');
+
+    console.log("[Withdraw] Mock proof created");
 
     // 11. Create client and build transaction
     const client = createClient(toAddress);
-    
-    console.log('[Withdraw] Building transaction...');
+
+    console.log("[Withdraw] Building transaction...");
     const tx = await client.withdraw({
       to: toAddress,
       proof_bytes: proofBytes,
@@ -380,16 +417,16 @@ export async function handleWithdraw(
     });
 
     // 12. Sign and submit transaction using the wallet's signTransaction directly
-    console.log('[Withdraw] Signing and submitting transaction...');
+    console.log("[Withdraw] Signing and submitting transaction...");
     const result = await tx.signAndSend({ signTransaction });
 
-    console.log('[Withdraw] Transaction result:', result);
+    console.log("[Withdraw] Transaction result:", result);
 
     // Check for errors in result
     const messages = result.result || [];
     if (messages.length > 0) {
       // Non-empty result means an error occurred
-      const errorMsg = messages.join(', ');
+      const errorMsg = messages.join(", ");
       return {
         success: false,
         error: errorMsg,
@@ -401,7 +438,7 @@ export async function handleWithdraw(
       txHash: result.getTransactionResponse?.txHash,
     };
   } catch (error) {
-    console.error('[Withdraw] Error:', error);
+    console.error("[Withdraw] Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : String(error),
@@ -419,15 +456,15 @@ export async function validateNote(noteString: string): Promise<{
 }> {
   try {
     const note = decodeNote(noteString);
-    
+
     // Verify the commitment can be computed (validates note data)
-    void await computeCommitment(
+    void (await computeCommitment(
       note.value,
       note.label,
       note.nullifier,
-      note.secret
-    );
-    
+      note.secret,
+    ));
+
     return {
       valid: true,
       note,
@@ -447,29 +484,29 @@ export async function isNoteSpent(noteString: string): Promise<boolean> {
   try {
     const note = decodeNote(noteString);
     const client = createClient();
-    
+
     // Compute nullifier hash
     const nullifierHash = await poseidonHash([note.nullifier]);
     const nullifierBuffer = bigintToBuffer(nullifierHash);
-    
+
     // Fetch used nullifiers
     const tx = await client.get_nullifiers();
     const result = await tx.simulate();
-    
+
     if (!result.result) {
       return false;
     }
-    
+
     // Check if our nullifier is in the list
     for (const usedNullifier of result.result) {
       if (usedNullifier.equals(nullifierBuffer)) {
         return true;
       }
     }
-    
+
     return false;
   } catch (error) {
-    console.error('[isNoteSpent] Error:', error);
+    console.error("[isNoteSpent] Error:", error);
     return false;
   }
 }
