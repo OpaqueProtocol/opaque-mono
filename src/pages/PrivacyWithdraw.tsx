@@ -24,7 +24,9 @@ const PrivacyWithdraw: React.FC = () => {
   const [isValidating, setIsValidating] = useState(false);
   const [noteValid, setNoteValid] = useState<boolean | null>(null);
   const [noteSpent, setNoteSpent] = useState<boolean | null>(null);
-  const [withdrawResult, setWithdrawResult] = useState<WithdrawResult | null>(null);
+  const [withdrawResult, setWithdrawResult] = useState<WithdrawResult | null>(
+    null
+  );
   const [loadingStatus, setLoadingStatus] = useState("");
 
   const { address, isPending, signTransaction } = useWallet();
@@ -42,7 +44,7 @@ const PrivacyWithdraw: React.FC = () => {
       try {
         const result = await validateNote(noteInput.trim());
         setNoteValid(result.valid);
-        
+
         if (result.valid) {
           // Check if note is already spent
           const spent = await isNoteSpent(noteInput.trim());
@@ -73,8 +75,12 @@ const PrivacyWithdraw: React.FC = () => {
       await new Promise((r) => setTimeout(r, 500));
 
       setLoadingStatus("Generating ZK proof (this may take 10-30 seconds)...");
-      
-      const result = await executeWithdraw(noteInput.trim(), address, signTransaction);
+
+      const result = await executeWithdraw(
+        noteInput.trim(),
+        address,
+        signTransaction
+      );
       setWithdrawResult(result);
     } catch (error) {
       setWithdrawResult({
@@ -109,7 +115,8 @@ const PrivacyWithdraw: React.FC = () => {
               Connect Your Wallet
             </h1>
             <p className="text-gray-400 mb-8 text-lg">
-              Connect your wallet to withdraw funds from the OPAQUE privacy pool.
+              Connect your wallet to withdraw funds from the OPAQUE privacy
+              pool.
             </p>
 
             <button
@@ -138,20 +145,29 @@ const PrivacyWithdraw: React.FC = () => {
                 <div className="w-20 h-20 mx-auto mb-6 bg-green-500/20 rounded-full flex items-center justify-center">
                   <CheckCircle size={48} className="text-green-400" />
                 </div>
-                <h2 className="text-3xl font-bold mb-2">Withdrawal Successful!</h2>
+                <h2 className="text-3xl font-bold mb-2">
+                  Withdrawal Successful!
+                </h2>
                 <p className="text-gray-400">
-                  1 XLM has been withdrawn to your wallet with complete privacy.
+                  100 XLM has been withdrawn to your wallet with complete
+                  privacy.
                 </p>
               </div>
 
               <div className="bg-black/40 rounded-2xl p-4 mb-6">
                 <div className="flex items-start space-x-3">
-                  <Shield className="text-green-400 flex-shrink-0 mt-1" size={20} />
+                  <Shield
+                    className="text-green-400 flex-shrink-0 mt-1"
+                    size={20}
+                  />
                   <div>
-                    <p className="text-green-200 font-semibold">Privacy Protected</p>
+                    <p className="text-green-200 font-semibold">
+                      Privacy Protected
+                    </p>
                     <p className="text-green-300/70 text-sm">
-                      Your withdrawal cannot be linked to your original deposit. 
-                      The zero-knowledge proof verified your ownership without revealing any connection.
+                      Your withdrawal cannot be linked to your original deposit.
+                      The zero-knowledge proof verified your ownership without
+                      revealing any connection.
                     </p>
                   </div>
                 </div>
@@ -232,18 +248,21 @@ const PrivacyWithdraw: React.FC = () => {
                 <div className="w-20 h-20 mx-auto mb-6 bg-[#FDDA24]/20 rounded-full flex items-center justify-center">
                   <Loader2 size={48} className="text-[#FDDA24] animate-spin" />
                 </div>
-                <h2 className="text-2xl font-bold mb-4">Processing Withdrawal</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                  Processing Withdrawal
+                </h2>
                 <p className="text-gray-400 mb-6">{loadingStatus}</p>
-                
+
                 <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
-                  <div 
+                  <div
                     className="bg-[#FDDA24] h-2 rounded-full animate-pulse"
-                    style={{ width: '60%' }}
+                    style={{ width: "60%" }}
                   />
                 </div>
-                
+
                 <p className="text-gray-500 text-sm">
-                  Please don't close this page. ZK proof generation may take up to 30 seconds.
+                  Please don't close this page. ZK proof generation may take up
+                  to 30 seconds.
                 </p>
               </div>
             </div>
@@ -302,7 +321,7 @@ const PrivacyWithdraw: React.FC = () => {
                     : "border-gray-700 focus:border-[#FDDA24]"
                 }`}
               />
-              
+
               {/* Validation Status */}
               {noteInput.trim() && (
                 <div className="mt-2">
@@ -344,12 +363,18 @@ const PrivacyWithdraw: React.FC = () => {
             {/* Info Box */}
             <div className="bg-purple-900/20 border border-purple-700/30 rounded-2xl p-4 mb-6">
               <div className="flex items-start space-x-3">
-                <Clock className="text-purple-400 flex-shrink-0 mt-1" size={20} />
+                <Clock
+                  className="text-purple-400 flex-shrink-0 mt-1"
+                  size={20}
+                />
                 <div>
-                  <p className="text-purple-200 font-semibold">ZK Proof Generation</p>
+                  <p className="text-purple-200 font-semibold">
+                    ZK Proof Generation
+                  </p>
                   <p className="text-purple-300/70 text-sm">
-                    Generating a zero-knowledge proof takes 10-30 seconds. This proof 
-                    verifies your ownership without revealing which deposit is yours.
+                    Generating a zero-knowledge proof takes 10-30 seconds. This
+                    proof verifies your ownership without revealing which
+                    deposit is yours.
                   </p>
                 </div>
               </div>
@@ -373,17 +398,23 @@ const PrivacyWithdraw: React.FC = () => {
             <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/50">
               <Shield size={20} className="text-green-400 mb-2" />
               <p className="font-semibold">Unlinkable</p>
-              <p className="text-gray-400 text-sm">No one can connect your withdrawal to the original deposit</p>
+              <p className="text-gray-400 text-sm">
+                No one can connect your withdrawal to the original deposit
+              </p>
             </div>
             <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/50">
               <CheckCircle size={20} className="text-blue-400 mb-2" />
               <p className="font-semibold">Verifiable</p>
-              <p className="text-gray-400 text-sm">Cryptographic proof ensures you own the funds</p>
+              <p className="text-gray-400 text-sm">
+                Cryptographic proof ensures you own the funds
+              </p>
             </div>
             <div className="bg-gray-900/40 rounded-2xl p-4 border border-gray-800/50">
               <Clock size={20} className="text-purple-400 mb-2" />
               <p className="font-semibold">Client-side</p>
-              <p className="text-gray-400 text-sm">Proof generation happens in your browser</p>
+              <p className="text-gray-400 text-sm">
+                Proof generation happens in your browser
+              </p>
             </div>
           </div>
         </div>

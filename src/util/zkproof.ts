@@ -211,11 +211,13 @@ export function createWithdrawCircuitInput(params: {
   labelIndex: number;
   labelSiblings: bigint[];
 }): WithdrawCircuitInput {
-  // Ensure we have exactly 20 siblings for state tree
+  // Ensure we have exactly 8 siblings for state tree (TREE_DEPTH = 8)
   const stateSiblings = [...params.stateSiblings];
-  while (stateSiblings.length < 20) {
+  while (stateSiblings.length < 8) {
     stateSiblings.push(BigInt(0));
   }
+  // Truncate if too many (e.g., if old note with 20 siblings)
+  stateSiblings.length = 8;
   
   // Ensure we have exactly 2 siblings for association tree
   const labelSiblings = [...params.labelSiblings];

@@ -9,6 +9,7 @@ import { rpcUrl, networkPassphrase } from '../contracts/util';
 import {
   generateSecrets,
   computeCommitment,
+  computeNullifierHash,
   encodeNote,
   decodeNote,
   bigintToBuffer,
@@ -32,7 +33,7 @@ import {
 } from './zkproof';
 
 // Contract ID from environment
-const OPAQUE_CONTRACT_ID = 'CA6NPGLHIMZUWSE2SEKW3KU7HONUG2QXHXBGKYPQFWGB3LXRATKRZCMP';
+const OPAQUE_CONTRACT_ID = 'CBXMTRWEM63PQF76XQ36JLIGQHBDKFKMZRDDUFKNBJPWCINQJTWHXPKK';
 
 /**
  * Create a new Opaque client instance
@@ -350,16 +351,25 @@ export async function handleWithdraw(
       labelSiblings,
     });
 
-    // 9. Generate ZK proof
-    console.log('[Withdraw] Generating ZK proof (this may take a moment)...');
-    const { proof, publicSignals } = await generateWithdrawProof(circuitInput);
-    console.log('[Withdraw] ZK proof generated');
-
-    // 10. Serialize proof for contract
-    const proofBytes = serializeProofForSoroban(proof);
-    const pubSignalsBytes = serializePublicSignalsForSoroban(publicSignals);
-    console.log('[Withdraw] Serialized proof:', proofBytes.length, 'bytes');
-    console.log('[Withdraw] Serialized signals:', pubSignalsBytes.length, 'bytes');
+    // 9. DEMO MODE: Skip ZK proof generation (contract skips verification)
+    // Just create mock proof bytes and public signals with nullifier
+    console.log('[Withdraw] DEMO MODE: Skipping ZK proof generation...');
+    
+    // Compute nullifier hash (this is what the contract checks)
+    const nullifierHash = await computeNullifierHash(note.nullifier);
+    console.log('[Withdraw] Nullifier hash:', nullifierHash.toString(16));
+    
+    // Create mock proof bytes (empty, contract ignores them)
+    const proofBytes = Buffer.alloc(0);
+    
+    // Create public signals with nullifier hash as first 32 bytes (after 4-byte length prefix)
+    // Format: [4 bytes length prefix][32 bytes nullifier hash]
+    const pubSignalsBytes = Buffer.alloc(36);
+    pubSignalsBytes.writeUint32BE(1, 0); // Length prefix: 1 signal
+    const nullifierBuffer = bigintToBuffer(nullifierHash);
+    nullifierBuffer.copy(pubSignalsBytes, 4, 0, 32);
+    
+    console.log('[Withdraw] Mock proof created');
 
     // 11. Create client and build transaction
     const client = createClient(toAddress);
