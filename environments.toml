@@ -76,8 +76,8 @@ name = "singularity"
 default = true
 
 [staging.contracts]
-groth16_verifier = { id = "CDV3QJVPD6NZU26Q7ULCXN2NO63ZU5JEDMMC7AVZOBTJOGJA5WEWBU7P", client = true }
-opaque = { id = "CBDIA6QSTORHFMNXTMRC3OC63CMCYSTORHFBGZVB6HGU2X5CR7OLCN4K", client = true }
+groth16_verifier = { id = "CAQKRSRRLFXPPMPUTMRLNMRQ63QLOSAA4YECMMGG4Y7QYOS2PQMJYVWV", client = true }
+opaque = { id = "CA6NPGLHIMZUWSE2SEKW3KU7HONUG2QXHXBGKYPQFWGB3LXRATKRZCMP", client = true }
 
 
 

@@ -21,9 +21,9 @@ const PrivacyDeposit: React.FC = () => {
 
   const { address, isPending, balances, signTransaction } = useWallet();
 
-  // Fixed deposit amount (1 XLM) - must match contract's FIXED_AMOUNT
-  const depositAmount = 1;
-  const depositAmountDisplay = "1 XLM";
+  // Fixed deposit amount (100 XLM) - must match contract's FIXED_AMOUNT
+  const depositAmount = 100;
+  const depositAmountDisplay = "100 XLM";
 
   // Helper to parse formatted balance (removes commas from formatted numbers)
   const parseBalance = (balance: string | undefined): number => {

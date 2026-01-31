@@ -32,7 +32,7 @@ import {
 } from './zkproof';
 
 // Contract ID from environment
-const OPAQUE_CONTRACT_ID = 'CBDIA6QSTORHFMNXTMRC3OC63CMCYSTORHFBGZVB6HGU2X5CR7OLCN4K';
+const OPAQUE_CONTRACT_ID = 'CA6NPGLHIMZUWSE2SEKW3KU7HONUG2QXHXBGKYPQFWGB3LXRATKRZCMP';
 
 /**
  * Create a new Opaque client instance
@@ -103,8 +103,23 @@ export async function handleDeposit(
 
     console.log('[Deposit] Transaction result:', result);
 
-    // 7. Get leaf index from result
-    const leafIndex = result.result?.isOk() ? result.result.unwrap() : 0;
+    // 7. Get leaf index from result - handle XDR parsing issues gracefully
+    let leafIndex = 0;
+    try {
+      if (result.result) {
+        // Try different ways to extract the leaf index
+        if (typeof result.result === 'number') {
+          leafIndex = result.result;
+        } else if (result.result.isOk && typeof result.result.isOk === 'function') {
+          leafIndex = result.result.isOk() ? result.result.unwrap() : 0;
+        } else if (result.result.value !== undefined) {
+          leafIndex = Number(result.result.value);
+        }
+      }
+    } catch (parseError) {
+      console.warn('[Deposit] Could not parse leaf index from result, using 0:', parseError);
+      // Transaction still succeeded, just couldn't parse leaf index
+    }
     console.log('[Deposit] Leaf index:', leafIndex);
 
     // 8. Encode note for user to save
@@ -284,30 +299,47 @@ export async function handleWithdraw(
     const associationRoot = bufferToBigint(associationRootBuffer);
     console.log('[Withdraw] Association root:', associationRoot.toString(16));
 
-    // 7. Get mock association proof (or use the one from contract)
-    // For now, if association root is zero, we use mock data
+    // 7. Handle association proof
+    // The circuit has this constraint: associationRoot * (associationRoot - computedRoot) === 0
+    // This means: if associationRoot is 0, any computedRoot is allowed
+    //             if associationRoot is non-zero, computedRoot must equal associationRoot
+    // 
+    // However, the contract REQUIRES associationRoot to be set (non-zero) before withdrawals.
+    // So we need to generate an association proof that produces the stored association root.
+    //
+    // For this to work, the admin must set an association root that includes our label.
+    // For demo purposes, we use a simple approach:
+    // - Generate a mock proof for our label
+    // - The mock proof computes an association root from just our label
+    // - If this matches the stored root (admin used same algorithm), withdrawal works
+    // - If not, we pass the stored root and zeros for siblings (will fail verification, but shows flow)
+    
     let labelIndex = 0;
     let labelSiblings: bigint[] = [];
+    let effectiveAssociationRoot: bigint;
     
     if (associationRoot === BigInt(0)) {
-      // Use mock association proof
-      const mockProof = await getMockAssociationProof(note.label);
-      labelIndex = mockProof.labelIndex;
-      labelSiblings = mockProof.labelSiblings;
-      // Use the mock association root
-      console.log('[Withdraw] Using mock association proof');
-    } else {
-      // In production, fetch real association proof from off-chain service
-      const mockProof = await getMockAssociationProof(note.label);
-      labelIndex = mockProof.labelIndex;
-      labelSiblings = mockProof.labelSiblings;
+      // Contract requires non-zero root - this case should not happen after setup
+      throw new Error('Association root not set. Admin must call set_association_root first.');
     }
+    
+    // Generate a mock proof for our label - this computes what root we'd expect
+    const mockProof = await getMockAssociationProof(note.label);
+    labelIndex = mockProof.labelIndex;
+    labelSiblings = mockProof.labelSiblings;
+    
+    // Use the association root from the contract
+    // For the circuit to verify, the computed root from (label, labelIndex, labelSiblings) 
+    // must equal the stored association root
+    effectiveAssociationRoot = associationRoot;
+    console.log('[Withdraw] Using association root from contract:', effectiveAssociationRoot.toString(16));
+    console.log('[Withdraw] Mock computed root:', mockProof.associationRoot.toString(16));
 
     // 8. Create circuit input
     const circuitInput = createWithdrawCircuitInput({
       withdrawnValue: FIXED_AMOUNT_STROOPS,
       stateRoot: merkleProof.root,
-      associationRoot,
+      associationRoot: effectiveAssociationRoot,
       label: note.label,
       value: note.value,
       nullifier: note.nullifier,

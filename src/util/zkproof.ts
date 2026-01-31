@@ -146,8 +146,12 @@ export function serializeProofForSoroban(proof: Groth16Proof): Buffer {
 
 /**
  * Serialize public signals for Soroban contract
- * Format: Array of Fr field elements (32 bytes each)
+ * Format: u32 length prefix (big-endian) + Array of Fr field elements (32 bytes each)
  * Order: [nullifierHash, withdrawnValue, stateRoot, associationRoot]
+ * 
+ * Contract expects from PublicSignals::from_bytes:
+ * - First 4 bytes: u32 length (big-endian)
+ * - Then: 32-byte Fr elements for each signal
  */
 export function serializePublicSignalsForSoroban(publicSignals: string[]): Buffer {
   // Expected order from circuit:
@@ -155,11 +159,16 @@ export function serializePublicSignalsForSoroban(publicSignals: string[]): Buffe
   // The circuit public inputs are: withdrawnValue, stateRoot, associationRoot
   // So the full order is: nullifierHash, withdrawnValue, stateRoot, associationRoot
   
-  const bytes = new Uint8Array(publicSignals.length * 32);
+  // 4 bytes for length prefix + 32 bytes per signal
+  const bytes = new Uint8Array(4 + publicSignals.length * 32);
+  
+  // Write length as u32 big-endian
+  const view = new DataView(bytes.buffer);
+  view.setUint32(0, publicSignals.length, false); // false = big-endian
   
   for (let i = 0; i < publicSignals.length; i++) {
     const fieldBytes = fieldElementToBytes(publicSignals[i]);
-    bytes.set(fieldBytes, i * 32);
+    bytes.set(fieldBytes, 4 + i * 32);
   }
   
   return Buffer.from(bytes);

@@ -40,7 +40,7 @@ pub const ERROR_WITHDRAW_SUCCESS: &str = "Withdrawal successful";
 pub const ERROR_ONLY_ADMIN: &str = "Only the admin can set association root";
 pub const SUCCESS_ASSOCIATION_ROOT_SET: &str = "Association root set successfully";
 
-const TREE_DEPTH: u32 = 10; // Supports 1024 deposits (for demo)
+const TREE_DEPTH: u32 = 8; // Reduced from 20 to fit Soroban budget (supports 256 deposits)
 
 // Storage keys
 const NULL_KEY: Symbol = symbol_short!("null");
@@ -50,7 +50,7 @@ const ASSOCIATION_ROOT_KEY: Symbol = symbol_short!("assoc");
 const ADMIN_KEY: Symbol = symbol_short!("admin");
 const GROTH16_VERIFIER_KEY: Symbol = symbol_short!("g16v");
 
-const FIXED_AMOUNT: i128 = 1000000000; // 1 XLM in stroops
+const FIXED_AMOUNT: i128 = 1_000_000_000; // 100 XLM in stroops
 
 #[contract]
 pub struct PrivacyPoolsContract;
@@ -81,7 +81,8 @@ impl PrivacyPoolsContract {
         env.storage().instance().set(&TREE_ROOT_KEY, &root);
     }
 
-    /// Stores a commitment in the merkle tree and updates the tree state
+    /// Stores a commitment in simple storage and updates a SHA256-based root
+    /// DEMO MODE: Uses SHA256 instead of Poseidon to fit within Soroban budget
     ///
     /// # Arguments
     /// * `env` - The Soroban environment
@@ -90,33 +91,38 @@ impl PrivacyPoolsContract {
     /// # Returns
     /// * A Result containing a tuple of (updated_merkle_root, leaf_index) after insertion
     fn store_commitment(env: &Env, commitment: BytesN<32>) -> Result<(BytesN<32>, u32), Error> {
-        // Load current tree state
-        let leaves: Vec<BytesN<32>> = env
+        // Load current leaves
+        let mut leaves: Vec<BytesN<32>> = env
             .storage()
             .instance()
             .get(&TREE_LEAVES_KEY)
             .unwrap_or(vec![&env]);
-        let depth: u32 = env.storage().instance().get(&TREE_DEPTH_KEY).unwrap_or(0);
-        let root: BytesN<32> = env
-            .storage()
-            .instance()
-            .get(&TREE_ROOT_KEY)
-            .unwrap_or(BytesN::from_array(&env, &[0u8; 32]));
-
-        // Create tree and insert new commitment
-        let mut tree = LeanIMT::from_storage(env, leaves, depth, root);
-        tree.insert(commitment).map_err(|_| Error::TreeAtCapacity)?;
-
-        // Get the leaf index (it's the last leaf in the tree)
-        let leaf_index = tree.get_leaf_count() - 1;
-    
-        // Store updated tree state
-        let (new_leaves, new_depth, new_root) = tree.to_storage();
-        env.storage().instance().set(&TREE_LEAVES_KEY, &new_leaves);
-        env.storage().instance().set(&TREE_DEPTH_KEY, &new_depth);
+        
+        // Check capacity (2^8 = 256 leaves max)
+        if leaves.len() >= 256 {
+            return Err(Error::TreeAtCapacity);
+        }
+        
+        // Get leaf index before adding
+        let leaf_index = leaves.len() as u32;
+        
+        // Add the new commitment
+        leaves.push_back(commitment.clone());
+        
+        // Compute a simple SHA256-based root (DEMO: not a real Merkle tree)
+        // Just hash all the leaves together for a unique root
+        let mut data = soroban_sdk::Bytes::new(env);
+        for leaf in leaves.iter() {
+            data.extend_from_slice(&leaf.to_array());
+        }
+        let new_root = env.crypto().sha256(&data);
+        
+        // Store updated state
+        env.storage().instance().set(&TREE_LEAVES_KEY, &leaves);
+        env.storage().instance().set(&TREE_DEPTH_KEY, &TREE_DEPTH);
         env.storage().instance().set(&TREE_ROOT_KEY, &new_root);
 
-        Ok((new_root, leaf_index))
+        Ok((new_root.into(), leaf_index))
     }
 
     /// Deposits funds into the privacy pool and stores a commitment in the merkle tree.

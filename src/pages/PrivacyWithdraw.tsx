@@ -278,7 +278,7 @@ const PrivacyWithdraw: React.FC = () => {
                 <ArrowUp size={32} className="text-[#FDDA24]" />
               </div>
               <p className="text-gray-400 text-sm mb-2">Withdrawal Amount</p>
-              <p className="text-5xl font-bold">1 XLM</p>
+              <p className="text-5xl font-bold">100 XLM</p>
             </div>
 
             {/* Note Input */}

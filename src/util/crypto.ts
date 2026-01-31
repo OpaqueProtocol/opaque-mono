@@ -199,4 +199,4 @@ export async function generateLabel(scope: string = 'default', nonce: number = 0
 }
 
 // Fixed deposit amount in stroops (1 XLM = 10^7 stroops)
-export const FIXED_AMOUNT_STROOPS = BigInt(1000000000); // 1 XLM as defined in contract
+export const FIXED_AMOUNT_STROOPS = BigInt(1_000_000_000); // 100 XLM as defined in contract
