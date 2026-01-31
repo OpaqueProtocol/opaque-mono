@@ -5,7 +5,7 @@ network-passphrase = "Standalone Network ; February 2017"
 run-locally = true # automatically start the local network container, if not already running
 
 [[development.accounts]]
-name = "me" # Required. Keys for this account will be saved to `./.stellar/identity`
+name = "singularity" # Required. Keys for this account will be saved to `./.stellar/identity`
 default = true # Optional. Whether to use this account as the `--source` for commands that need one.
 
 [development.contracts]
@@ -72,17 +72,14 @@ rpc-url = "https://soroban-testnet.stellar.org"
 network-passphrase = "Test SDF Network ; September 2015"
 
 [[staging.accounts]]
-name = "testnet-user"
+name = "singularity"
 default = true
 
 [staging.contracts]
-# soroban-atomic-swap-contract = { id = "C123..." }
-# soroban-auth-contract = { id = "C234..." }
-# soroban-errors-contract = { id = "C345..." }
-# soroban-hello-world-contract = { id = "C456..." }
-# soroban-increment-contract = { id = "C567..." }
-# soroban-token-contract = { id = "C678..." }
-# eurc = { id = "C789..." }
+groth16_verifier = { id = "CDV3QJVPD6NZU26Q7ULCXN2NO63ZU5JEDMMC7AVZOBTJOGJA5WEWBU7P", client = true }
+opaque = { id = "CBDIA6QSTORHFMNXTMRC3OC63CMCYSTORHFBGZVB6HGU2X5CR7OLCN4K", client = true }
+
+
 
 ### Production environment configuration
 [production.network]
